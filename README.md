@@ -20,14 +20,54 @@
 
 ## Description
 
-A Super Galactic Age Calculator that converts Earth Year/Age into Planetary Age based on the following condition:
+# Daily Diabetes Diagnostic Device
 
-* Returns their age in Mercury years. (A Mercury year is .24 Earth years.)
-* Returns their age in Venus years. (A Venus year is .62 Earth years.)
-* Returns their age in Mars years. (A Mars year is 1.88 Earth years.)
-* Returns their age in Jupiter years. (A Jupiter year is 11.86 Earth years.)
+## Notes
 
-It would also return the remaining years based on the user's age and zodiac sign for each planet and the number of years lived past if they surpassed the life expectancy for their zodiac sign.
+### Description
+
+A Health Management System for person with Diabetes that tracks information related to diabetes stats.
+
+#### Objectives (MVP)
+
+* Create a user profile to store user data locally
+  * Features:
+
+      * Blood Glucose Monitor
+        * User set goal for glucose level
+        * Blood Glucose - User inputted number, five times / day or avg
+          * store number & time of day inputted
+          * (morning, breakfast, lunch, dinner, bedtime)
+        * Insulin Units/day - User inputted number based on what you eat / what your levels are
+        * A1C% = (Estimated average glucose(mg/dL) + 46.7) / 28.7 
+
+      * Carb Tracker 
+        * User set limit, displays message if surpassed
+        * Carbs/day 
+          * Basic user input
+          * User selects foods from recipes API list they've had that day, assembles meals / multiple meals / API gets nutritional info & stores total carb levels
+        * Search diabetes-friendly recipes
+
+      * Activity Tracker
+        * User sets goal for daily exercise minutes
+        * Activity - User inputs activity for the day
+        
+  * Site Structure:
+  
+    * **Index**
+      * Form inputs:
+        * Blood Glucose (single or multiple entries)
+        * Carb Tracker (search, select & save by whole ingredients)
+        * Activity Tracker (single or multiple entries)
+      * User Snapshot Green / Yellow / Red Indicator 
+
+#### Goals
+1. Meet project MVP requirements.
+2. Create multiple HTML pages (user profile, recipes etc.) 
+3. Stretch: Generate dynamic Insulin Units reading based on user inputted meals  & carb ratio (ex. 1unit/5grams).
+4. Stretch: Save favorite recipes to profile
+5. Stretch: Interface with fitbit / wearable tracker API to get user activity data
+6. Stretch: Recipe Search Section
 
 ## Setup/Installation Requirements
 
