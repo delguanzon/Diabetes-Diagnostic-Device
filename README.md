@@ -1,4 +1,4 @@
-#  Galactic Birthday Calculator
+#  Daily Diabetic Diagnostic Device
 
 #### By Yodel Guanzon <yodelguanzon@gmail.com>
 
