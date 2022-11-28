@@ -1,8 +1,8 @@
 #  Daily Diabetic Diagnostic Device
 
-#### By Yodel Guanzon <yodelguanzon@gmail.com>
+### By Yodel Guanzon, Richard Cha, Jennifer Holcomb, Kirsten Opstad, Dominik Magic, and Henry Sullivan
 
-#### This is an independent project to test out our skills with TDD Approach using jest.
+#### This is a tracking app for people with diabetes.
 
 ## Technologies Used
 
@@ -17,14 +17,9 @@
 * Html Loader
 * DotEnv
 * Bootstrap
+* Edamam API
 
 ## Description
-
-# Daily Diabetes Diagnostic Device
-
-## Notes
-
-### Description
 
 A Health Management System for person with Diabetes that tracks information related to diabetes stats.
 
@@ -54,7 +49,7 @@ A Health Management System for person with Diabetes that tracks information rela
         
   * Site Structure:
   
-    * **Index**
+    * **Index UI**
       * Form inputs:
         * Blood Glucose (single or multiple entries)
         * Carb Tracker (search, select & save by whole ingredients)
@@ -71,10 +66,13 @@ A Health Management System for person with Diabetes that tracks information rela
 
 ## Setup/Installation Requirements
 
+* Install Node.js:
+* [OS X and Windows Instructions](https://www.learnhowtoprogram.com/intermediate-javascript/getting-started-with-javascript/installing-node-js)
 * Clone this repository on your desktop
 * Navigate to the top level of the directory using bash or cmd
 * Run ``` $npm install ``` to install dependencies
-* To test, use ```npm run test```
+* Confirm all files in the src folder have 0 errors by running command ``` $ npm run lint ```
+* Confirm all business logic tests pass with Jest by running command ``` $ npm run test ```
 * For building and live preview, use ```npm run start```
 
 ### API Key Setup
@@ -94,7 +92,7 @@ OR
 
 * None
 
-Found a bug? Email me at <yodelguanzon@gmail.com>
+Found a bug? Email us at <yodelguanzon@gmail.com>
 
 ## License
 
@@ -118,5 +116,5 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Copyright (c) 11/14/2022 Yodel Guanzon
+Copyright (c) 2022 Yodel Guanzon, Richard Cha, Jennifer Holcomb, Kirsten Opstad, Dominik Magic, and Henry Sullivan
 
