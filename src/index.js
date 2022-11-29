@@ -2,7 +2,7 @@ import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './assets/css/styles.css';
 import CarbService from './js/carb-services.js';
-import {conversion, getItemCarbs} from './js/carbs.js';
+import {conversion} from './js/carbs.js';
 // import User from './js/user.js';
 
 // Save to Session
@@ -20,20 +20,32 @@ import {conversion, getItemCarbs} from './js/carbs.js';
 // //console.log(`${process.env.API_KEY}`);
 // });
 
-function getCarbs(food) {
-  let promise = CarbService.getCarbs(food);
-  promise.then(function (carbsData) {
+async function getCarbs(food) {
+  const promise = await CarbService.getCarbs(food);
+  if(promise[0].text) {
     sessionStorage.setItem(food, JSON.stringify(promise));
-    console.log(sessionStorage);
-    printElements(carbsData);
-  }, function() {
+    printElements(promise);
+  } else {
     printError();
-  });
+  }
 }
+
+// async function getWeather(city) {
+//   const response = await WeatherService.getWeather(city);
+//   if(response.main) {
+//     printElements(response, city);
+//   } else {
+//     printError(response, city);
+//   }
+// }
 
 function printElements(data) {
   const carbs = data[0].parsed[0].food.nutrients.CHOCDF;
-  document.getElementById('carbs').innerText = `There are ${carbs}g carbs in 100g of ${data[0].text}`;
+  let quantity = document.getElementById("quantity-of-food").value;
+  let measurement = document.getElementById("measurement").value;
+  const gramsWeight = conversion(quantity, measurement);
+  const totalCarbs = gramsWeight * carbs;
+  document.getElementById('carbs').innerText = `There are ${totalCarbs}g carbs in ${quantity} ${measurement} of ${data[0].text}`;
 }
 
 function printError() {
@@ -43,11 +55,7 @@ function printError() {
 function handleCarbSubmission(event) {
   event.preventDefault();
   const food = document.getElementById("type-of-food").value;
-  fetch getCarbs(food);
-  let quantity = document.getElementById("quantity-of-food").value;
-  let measurement = document.getElementById("measurement").value;
-  const gramsWeight = conversion(quantity, measurement);
-  getItemCarbs(gramsWeight, food);
+  getCarbs(food);
   document.getElementById("type-of-food").innerText = null;
 }
 

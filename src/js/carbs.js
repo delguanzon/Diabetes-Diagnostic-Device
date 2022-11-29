@@ -15,13 +15,13 @@ export function conversion (quantity, measurement) {
   }
 } 
 
-export function getItemCarbs (gramsWeight, food) {
-  const data = (sessionStorage.getItem(food));
-  console.log(data);
-  const carbs = data[0].parsed[0].food.nutrients.CHOCDF;
-  console.log(carbs);
-  return gramsWeight * carbs;
-}
+// export function getItemCarbs (gramsWeight, food, carbs) {
+//   // const data = (sessionStorage.getItem(food));
+//   // console.log(data);
+//   const carbs = data[0].parsed[0].food.nutrients.CHOCDF;
+//   console.log(carbs);
+//   return gramsWeight * carbs;
+// }
 
 
 /// 8 T = 100 g        (input/8) * 100 = grams
