@@ -33,7 +33,31 @@ function handleGlucoseSubmission() {
   addGlucoseLevel(glucLvl, glucLvlTime);
   addInsulinLevel(insLvl, insLvlTime);
   calculateA1C();
+  printGlucoseData();
+  printInsulinData();
 }
+
+function printGlucoseData() {
+  let user = JSON.parse(sessionStorage.getItem('person'));
+  let displayContainer = document.querySelector('div.container');
+  for (let i = 0; i < user.glucoseLevels.length; i++) {
+    let p = document.createElement('p');
+    p.append(`Glucose level is ${user.glucoseLevels[i]}, and time of the entry is ${user.glucoseTimes[i]}`);
+    displayContainer.append(p);
+  }
+}
+
+function printInsulinData() {
+  let user = JSON.parse(sessionStorage.getItem('person'));
+  let displayContainer = document.querySelector('div.container');
+  for (let i = 0; i < user.insulinLevels.length; i++) {
+    let p = document.createElement('p');
+    p.append(`Insulin level is ${user.insulinLevels[i]}, and the time of the entry is ${user.insulinTimes[i]}`);
+    displayContainer.append(p);
+  }
+}
+
+
 
 window.addEventListener('load', function () {
 //console.log(`${process.env.API_KEY}`);
