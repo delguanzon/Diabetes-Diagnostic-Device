@@ -1,7 +1,8 @@
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './assets/css/styles.css';
-import CarbService from './carb-services.js';
+import CarbService from './js/carb-services.js';
+import {conversion, getItemCarbs} from './js/carbs.js';
 // import User from './js/user.js';
 
 // Save to Session
@@ -22,30 +23,34 @@ import CarbService from './carb-services.js';
 function getCarbs(food) {
   let promise = CarbService.getCarbs(food);
   promise.then(function (carbsData) {
-
     sessionStorage.setItem(food, JSON.stringify(promise));
+    console.log(sessionStorage);
     printElements(carbsData);
-  }, function(error) {
-    printError(error);
+  }, function() {
+    printError();
   });
 }
 
 function printElements(data) {
-  document.getElementById('carbs').innerText = `There are ${data.parsed[0].food.nutrients.CHOCDF} carbs in 100g of ${data.text}`
-  console.log(data.parsed[0].food.nutrients.CHOCDF);
+  const carbs = data[0].parsed[0].food.nutrients.CHOCDF;
+  document.getElementById('carbs').innerText = `There are ${carbs}g carbs in 100g of ${data[0].text}`;
 }
 
 function printError() {
-  document.getElementById('carbs').innerText = "somethings wrong"
+  document.getElementById('carbs').innerText = "somethings wrong";
 }
 
 function handleCarbSubmission(event) {
   event.preventDefault();
   const food = document.getElementById("type-of-food").value;
-  console.log(food);
-  getCarbs(food);
+  fetch getCarbs(food);
+  let quantity = document.getElementById("quantity-of-food").value;
+  let measurement = document.getElementById("measurement").value;
+  const gramsWeight = conversion(quantity, measurement);
+  getItemCarbs(gramsWeight, food);
+  document.getElementById("type-of-food").innerText = null;
 }
 
 window.addEventListener("load", function() {
   document.getElementById("food-carbs").addEventListener("submit", handleCarbSubmission);
-})
+});

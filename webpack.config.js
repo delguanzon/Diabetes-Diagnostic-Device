@@ -14,16 +14,16 @@ module.exports = {
     contentBase: './dist'
   }, 
   plugins: [
-    new Dotenv(),
     new ESLintPlugin(),
     new CleanWebpackPlugin({
       verbose: true
     }),
     new HtmlWebpackPlugin({
-      title: 'Prjoect Title',
+      title: 'Project Title',
       template: './src/index.html',
       inject: 'body'
-    })
+    }),
+    new Dotenv()
   ],
   module: {
     rules: [

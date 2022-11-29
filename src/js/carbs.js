@@ -1,36 +1,31 @@
-// * Carb Tracker 
-// * User set limit, displays message if surpassed
-// * Carbs/day 
-//   * Basic user input
-//   * User selects foods from recipes API list they've had that day, assembles meals / multiple meals / API gets nutritional info & stores total carb levels
-// * Search diabetes-friendly recipes
+
+export function conversion (quantity, measurement) {
+  if(measurement === 'grams') {
+    return quantity/100;
+  } else if(measurement === 'ounces') {
+    return ((quantity/4) *100) / 100;
+  } else if(measurement === 'pounds') {
+    return ((quantity/.25) *100) / 100;       
+  } else if(measurement === 'cups') {
+    return ((quantity/.5) *100) / 100;    
+  } else if(measurement === 'tablespoons') {
+    return ((quantity/8) *100) / 100;    
+  } else if(measurement === 'teaspoons') {
+    return ((quantity/24) * 100) / 100;    
+  }
+} 
+
+export function getItemCarbs (gramsWeight, food) {
+  const data = (sessionStorage.getItem(food));
+  console.log(data);
+  const carbs = data[0].parsed[0].food.nutrients.CHOCDF;
+  console.log(carbs);
+  return gramsWeight * carbs;
+}
 
 
-// import CarbService from './carb-services.'
-
-// function getCarbs(food) {
-//   let promise = CarbService.getCarbs(food);
-//   promise.then(function (carbsData) {
-
-//     sessionStorage.setItem(food, JSON.stringify(promise));
-//     printElements(carbsData);
-//   }, function(error) {
-//     printError(error);
-//   });
-// }
-
-// function printElements(data) {
-//   document.getElementById('carbs').innerText = `There are ${data.parsed[0].food.nutrients.CHOCDF} carbs in 100g of ${data.text}`
-//   console.log(data.parsed[0].food.nutrients.CHOCDF);
-// }
-
-// function handleCarbSubmission(event) {
-//   event.preventDefault();
-//   const food = document.getElementById("type-of-food").value;
-//   console.log(food);
-//   getCarbs(food);
-// }
-
-// window.addEventListener("load", function() {
-//   document.getElementById("food-carbs").addEventListener("submit", handleCarbSubmission);
-// })
+/// 8 T = 100 g        (input/8) * 100 = grams
+// 24 t = 100 g       (input/24) * 100 = grams
+// 4 ounces = 100 g   (input/4) * 100 = grams
+// .25 lbs = 100 g    (input/.25) * 100 = grams
+// .5 c = 100 g       (input/.5) * 100 = grams
