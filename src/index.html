@@ -4,11 +4,6 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
-    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js"
-    integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk"
-    crossorigin="anonymous"></script> -->
   <title>Daily Diabetes Diagnostic Device</title>
 </head>
 <body>
@@ -33,16 +28,25 @@
       <button type="submit">Add Blood Glucose Numbers</button>
       </div>
     </form>
-    <form id="total-carbs">
-      <input type="number" id="carbsday">
-      <label for="carbsday">Total Carbs/Day</label>
-      <button type="submit">Add Total Carbs</button>
-    </form>
-    <form id="activity-level">
-      <input type="number" id="totalminutes">
-      <label for="totalminutes">Total Activity Minutes</label>
-      <button type="submit">Add Total Minutes</button>
-    </form>
+    <form id="food-carbs">
+    <input type="text" id="type-of-food">
+    <label for="type-of-food">Enter ingredient</label>
+    <input type="text" id="quantity-of-food">
+    <label for="quantity-of-food">Enter quantity</label>
+    <select name="measure-option" id="measurement">
+      <option value="">--Choose measurement--</option>
+      <option value="grams">grams</option>
+      <option value="ounces">ounces</option>
+      <option value="pounds">pounds</option>
+      <option value="cups">cups</option>
+      <option value="tablespoons">tablespoons</option>
+      <option value="teaspoons">teaspoons</option>
+    </select>
+    </label>
+    <button type="submit">Get carbs</button>
+  </form>
+  <p id="carbs"></p>
+  <p>These are your total carbs for the day: <span id="daily-carbs"></span></p>
   </div>
 </body>
 </html>
