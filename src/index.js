@@ -78,12 +78,36 @@ function printGlucoseData() {
 
 function printInsulinData() {
   let user = JSON.parse(sessionStorage.getItem('person'));
-  let displayContainer = document.querySelector('div.container');
-  for (let i = 0; i < user.insulinLevels.length; i++) {
-    let p = document.createElement('p');
-    p.append(`Insulin level is ${user.insulinLevels[i]}, and the time of the entry is ${user.insulinTimes[i]}`);
-    displayContainer.append(p);
+  if (!document.querySelector('div#insDiv')) {
+    let insDiv = document.createElement('div');
+    insDiv.setAttribute('id', 'insDiv');
+    document.querySelector('div.container').append(insDiv);
+  } else {
+    document.querySelector('div#insDiv').replaceChildren('');
   }
+  let table = document.createElement('table');
+  table.setAttribute('class', 'table');
+  let head = document.createElement('thead');
+  let headerRow = document.createElement('tr');
+  let tableHeader1 = document.createElement('th');
+  let tableHeader2 = document.createElement('th');
+  tableHeader1.innerText = 'Insulin Levels';
+  tableHeader2.innerText = 'Time';
+  headerRow.append(tableHeader1, tableHeader2);
+  head.append(headerRow);
+  table.append(head);
+  let body = document.createElement('tbody');
+  for (let i = 0; i < user.insulinLevels.length; i++) {
+    let tr = document.createElement('tr');
+    let td1 = document.createElement('td');
+    let td2 = document.createElement('td');
+    td1.innerText = user.insulinLevels[i]; 
+    td2.innerText = user.insulinTimes[i]; 
+    tr.append(td1, td2);
+    body.append(tr);
+  }
+  table.append(body);
+  document.querySelector('div#insDiv').append(table);
 }
 
 
