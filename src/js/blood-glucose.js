@@ -1,11 +1,16 @@
 export function updateGlucoseGoal(bloodGGoal) {
   let user = JSON.parse(sessionStorage.getItem('person'));
-  user.gluceseLevel = bloodGGoal;
+  user.gluceseGoal = bloodGGoal;
   sessionStorage.setItem('person', JSON.stringify(user));
   // Store number & time of day in User object session storage
 }
 
 export function addGlucoseLevel(bloodGLevel, dateTime) {
+  let user = JSON.parse(sessionStorage.getItem('person'));
+  user.glucoseLevels.push(bloodGLevel);
+  user.glucoseTimes.push(dateTime);
+  sessionStorage.setItem('person', JSON.stringify(user));
+
   console.log(bloodGLevel);
   console.log(dateTime);
   // Store number & time of day in User object session storage
