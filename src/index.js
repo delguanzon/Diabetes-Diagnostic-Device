@@ -2,7 +2,7 @@ import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './assets/css/styles.css';
 import User from './js/user.js';
-import {updateGlucoseGoal} from './js/blood-glucose.js'
+import {updateGlucoseGoal, addGlucoseLevel} from './js/blood-glucose.js'
 
 // Save to Session
 // sessionStorage.setItem("key", value);
@@ -30,6 +30,7 @@ function handleGlucoseSubmission() {
   console.log(insLvlTime);
   // Run functions to add data to user object
   updateGlucoseGoal(glucGoal);
+  addGlucoseLevel(glucLvl, glucLvlTime);
 
 }
 
