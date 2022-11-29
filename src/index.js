@@ -16,6 +16,7 @@ function handleFormSubmission() {
 }
 
 function handleGlucoseSubmission() {
+  event.preventDefault();
   // Retrieve inputs
   const glucGoal = document.getElementById('glucose-goal').value;
   const glucLvl = document.getElementById('glucose-level').value;
