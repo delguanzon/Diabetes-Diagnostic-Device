@@ -23,10 +23,19 @@
     <label for="carbsday">Total Carbs/Day</label>
     <button type="submit">Add Total Carbs</button>
   </form>
-  <form id="activity-level">
-    <input type="number" id="totalminutes">
-    <label for="totalminutes">Total Activity Minutes</label>
-    <button type="submit">Add Total Minutes</button>
-  </form>
+
+  <div id="activity">
+    <button>New Activity</button>
+    <form id="activity-form">
+      <input type="number" id="beforeBs">
+      <label for="beforeBs">Current Blood Sugar</label> <span id="warning-msg" hidden class="badge badge-warning">low blood sugar</span>
+      <button type="submit">Enter</button>
+      <!-- IF warning happens, display message -->
+      <p id="low-bs" hidden>If your blood sugar level is less than 100 mg/dl before you start your activity, try having a small 
+      carbohydrate snack (about 15 grams) to increase your blood sugar and reduce your risk for hypoglycemia.</p>
+      <button type="submit" hidden>Start</button>
+    </form>
+    
+  </div>
 </body>
 </html>
