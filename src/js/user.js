@@ -6,6 +6,8 @@ export default class User {
     this.dob = dob;
     this.glucoseLevels = [];
     this.glucoseTimes = [];
+    this.insulinLevels = [];
+    this.insulinTimes = [];
   }
 
   setBloodSugar(bs){
