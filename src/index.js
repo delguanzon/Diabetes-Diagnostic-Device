@@ -36,5 +36,5 @@ function handleGlucoseSubmission() {
 window.addEventListener('load', function () {
 //console.log(`${process.env.API_KEY}`);
   handleFormSubmission();
-  document.querySelector('form#glucose-level').addEventListener('submit', handleGlucoseSubmission);
+  document.querySelector('form#glucose-form').addEventListener('submit', handleGlucoseSubmission);
 });
