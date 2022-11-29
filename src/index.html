@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en-US">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Daily Diabetes Diagnostic Device</title>
 </head>
+
 <body>
   <div class="container">
     <h1>Daily Diabetes Diagnostic Device</h1>
@@ -47,6 +49,48 @@
   </form>
   <p id="carbs"></p>
   <p>These are your total carbs for the day: <span id="daily-carbs"></span></p>
+  
+  <div id="activity">
+    <h2>Activity</h2>
+    <div id="activity-log"> recent activity here</div>
+    <button id="new-activity-btn">New Activity</button>
+
+    <div id="new-activity" hidden>
+      <form id="activity-form">
+        <input type="number" id="beforeBs">
+        <label for="beforeBs">Current Blood Sugar</label>
+        <span id="warning-tag-low" class="badge badge-warning" hidden>low blood sugar</span>
+        <span id="warning-tag-high" class="badge badge-danger" hidden>high blood sugar</span>
+        <button type="submit">Enter</button>
+        <blockquote class="blockquote" hidden id="warning-msg-low">
+          <p class="mb-0">Warning: "If your blood sugar level is less than 100 mg/dl before you start your activity, try
+            having a small carbohydrate snack (about 15 grams) to increase your blood sugar and reduce your risk for hypoglycemia."</p>
+          <footer class="blockquote-footer"><cite title="Source Title">American Diabetes Association</cite></footer>
+        </blockquote>
+        <blockquote class="blockquote" hidden id="warning-msg-high">
+          <p class="mb-0">Warning: "If your blood sugar is high before starting exercise, check your blood or 
+            urine for ketones. If you test positive for ketones, avoid vigorous activity."</p>
+          <footer class="blockquote-footer"><cite title="Source Title">American Diabetes Association</cite></footer>
+        </blockquote>
+      </form>
+      <div id="timer" hidden>
+        <button id="start">Start</button> <button id="end">End</button>
+        <h4 id="dispTimer">00:00</h4>
+        <!-- IF above 45min then display base bloodsugar and have user recheck -->
+      </div>
+      <form id="end-activity-form" hidden>
+        <input type="number" id="afterBs">
+        <label for="afterBs">Current Blood Sugar</label>
+        <input type="number" id="steps">
+        <label for="steps">Steps</label>
+        <button type="submit">End Activity</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="temp-activity-div">
+
   </div>
 </body>
+
 </html>

@@ -4,6 +4,7 @@ export default class User {
     this.name = name;
     this.age = age;
     this.dob = dob;
+    this.activities = [];
     this.glucoseLevels = [];
     this.glucoseTimes = [];
     this.insulinLevels = [];
@@ -13,4 +14,10 @@ export default class User {
   setBloodSugar(bs){
     this.bs = bs;
   }
+
+  addActivity(activity) {
+    this.activities.push(activity);
+  }
+
 }
+
