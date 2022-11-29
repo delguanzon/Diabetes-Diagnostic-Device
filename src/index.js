@@ -40,20 +40,33 @@ function handleCarbSubmission() {
   document.getElementById("type-of-food").innerText = null;
 }
 
-function handleGlucoseSubmission() {
+function handleGlucoseGoalSubmission() {
   event.preventDefault();
   // Retrieve inputs
   const glucGoal = document.getElementById('glucose-goal').value;
+  // Run function to add data to user object
+  updateGlucoseGoal(glucGoal);
+  // TODO: Add display function
+}
+
+function handleGlucoseSubmission() {
+  event.preventDefault();
+  // Retrieve inputs
   const glucLvl = document.getElementById('glucose-level').value;
   const glucLvlTime = document.getElementById('glucose-time').value;
+  // Run functions to add data to user object
+  addGlucoseLevel(glucLvl, glucLvlTime);
+  calculateA1C();
+  printGlucoseData();
+}
+
+function handleInsulinSubmission() {
+  event.preventDefault();
+  // Retrieve inputs
   const insLvl = document.getElementById('insulin-level').value;
   const insLvlTime = document.getElementById('insulin-time').value;
   // Run functions to add data to user object
-  updateGlucoseGoal(glucGoal);
-  addGlucoseLevel(glucLvl, glucLvlTime);
   addInsulinLevel(insLvl, insLvlTime);
-  calculateA1C();
-  printGlucoseData();
   printInsulinData();
 }
 
@@ -235,7 +248,9 @@ window.addEventListener('load', function () {
   this.document.getElementById("start").addEventListener("click", handleStartTimer);
   this.document.getElementById("end").addEventListener("click", handleEndTimer);
   document.getElementById("end-activity-form").addEventListener("submit", handleEndActivityForm); 
-  document.querySelector('form#glucose-form').addEventListener('submit', handleGlucoseSubmission);  
+  document.querySelector('form#glucose-goal-form').addEventListener('submit', handleGlucoseGoalSubmission);
+  document.querySelector('form#glucose-level-form').addEventListener('submit', handleGlucoseSubmission);
+  document.querySelector('form#insulin-level-form').addEventListener('submit', handleInsulinSubmission);  
   sessionStorage.setItem('totalCarbs', 0);
   document.getElementById("food-carbs").addEventListener("submit", handleCarbSubmission);
 
