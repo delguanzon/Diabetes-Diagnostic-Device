@@ -31,17 +31,33 @@ function handleNewActivity() {
 }
 
 function handleActivityFormSubmission(e) {
+
+  let lowTag = document.getElementById("warning-tag-low");
+  let lowMsg = document.getElementById("warning-msg-low");
+  let highTag = document.getElementById("warning-tag-high");
+  let highMsg = document.getElementById("warning-msg-high");
+
+
+  lowMsg.setAttribute("hidden", "");
+  lowTag.setAttribute("hidden", "");
+  highTag.setAttribute("hidden", "");
+  highMsg.setAttribute("hidden", "");
+
+
+
+  document.getElementById("warning-tag-high").setAttribute("hidden","");
+  document.getElementById("warning-msg-high").setAttribute("hidden","");
   e.preventDefault();
   //new code to do checkBloodSugar
   const bloodSugar = document.getElementById("beforeBs").value;
   if (checkBloodSugar(bloodSugar) === "low") {
-    document.getElementById("warning-tag-low").removeAttribute("hidden");
-    document.getElementById("warning-msg-low").removeAttribute("hidden");
+    lowTag.removeAttribute("hidden");
+    lowMsg.removeAttribute("hidden");
   } else if (checkBloodSugar(bloodSugar) === "high") {
-    document.getElementById("warning-tag-high").removeAttribute("hidden");
-    document.getElementById("warning-msg-high").removeAttribute("hidden");
+    highTag.removeAttribute("hidden");
+    highMsg.removeAttribute("hidden");
   }
-  document.getElementById("timer").removeAttribute("hidden");
+  else document.getElementById("timer").removeAttribute("hidden");
 }
 
 function handleStartTimer() {
@@ -63,27 +79,51 @@ function handleStartTimer() {
 }
 
 function displayTimer() {
-  let s = sessionStorage.sec;
-  let m = sessionStorage.min;
-  let h = sessionStorage.hour;
-  s++;
-  if (s == 60) {
-    s = 0;
-    m++;
-    if (m == 60) {
-      m = 0;
-      h++;
+  let sec = sessionStorage.sec;
+  let min = sessionStorage.min;
+  let hour = sessionStorage.hour;
+  sec++;
+  if (sec == 60) {
+    sec = 0;
+    min++;
+    if (min == 60) {
+      min = 0;
+      hour++;
     }
   }
+
+  let h = hour < 10 ? "0" + hour : hour;
+  let m = min < 10 ? "0" + min : min;
+  let s = sec < 10 ? "0" + sec : sec;
   document.getElementById("dispTimer").replaceChildren(`${h}:${m}:${s}`); //Fix timer formatting
-  sessionStorage.sec = s;
-  sessionStorage.min = m;
-  sessionStorage.hour = h;
+  sessionStorage.sec = sec;
+  sessionStorage.min = min;
+  sessionStorage.hour = hour;
 }
 
 
 function handleEndTimer() {
   clearInterval(parseInt(sessionStorage.intId));
+  document.getElementById("end-activity-form").removeAttribute("hidden");
+  
+}
+
+function handleEndActivityForm(e) {
+  //TODO: hide Timer, reveal this form
+  e.preventDefault();
+  let activity = JSON.parse(sessionStorage.activity);
+  
+  activity.steps = document.getElementById("steps").value;
+  activity.currentBs = document.getElementById("afterBs").value;
+  activity.timeEnd = Date.now();
+  
+  console.log(activity);
+  sessionStorage.activity = activity;
+
+  let person = JSON.parse(sessionStorage.person);
+  person.activities.push(activity);
+  sessionStorage.setItem("person", JSON.stringify(person));
+  
 }
 
 window.addEventListener('load', function () {
@@ -95,4 +135,5 @@ window.addEventListener('load', function () {
   document.getElementById("activity-form").addEventListener("submit", handleActivityFormSubmission);
   this.document.getElementById("start").addEventListener("click", handleStartTimer);
   this.document.getElementById("end").addEventListener("click", handleEndTimer);
+  document.getElementById("end-activity-form").addEventListener("submit", handleEndActivityForm);
 });

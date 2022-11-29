@@ -36,7 +36,7 @@
         <input type="number" id="beforeBs">
         <label for="beforeBs">Current Blood Sugar</label>
         <span id="warning-tag-low" class="badge badge-warning" hidden>low blood sugar</span>
-        <span id="warning-tag-high" class="badge badge-warning" hidden>high blood sugar</span>
+        <span id="warning-tag-high" class="badge badge-danger" hidden>high blood sugar</span>
         <button type="submit">Enter</button>
         <blockquote class="blockquote" hidden id="warning-msg-low">
           <p class="mb-0">Warning: "If your blood sugar level is less than 100 mg/dl before you start your activity, try
@@ -54,7 +54,7 @@
         <h4 id="dispTimer">00:00</h4>
         <!-- IF above 45min then display base bloodsugar and have user recheck -->
       </div>
-      <form id="end-activity-form">
+      <form id="end-activity-form" hidden>
         <input type="number" id="afterBs">
         <label for="afterBs">Current Blood Sugar</label>
         <input type="number" id="steps">
