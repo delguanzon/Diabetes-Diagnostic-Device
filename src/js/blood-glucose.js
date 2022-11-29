@@ -17,6 +17,10 @@ export function addGlucoseLevel(bloodGLevel, dateTime) {
 }
 
 export function addInsulinLevel(bloodILevel, dateTime) {
+  let user = JSON.parse(sessionStorage.getItem('person'));
+  user.insulinLevels.push(bloodILevel);
+  user.insulinTimes.push(dateTime);
+  sessionStorage.setItem('person', JSON.stringify(user));
   console.log(bloodILevel);
   console.log(dateTime);
   // Store number & time of day in User object session storage
