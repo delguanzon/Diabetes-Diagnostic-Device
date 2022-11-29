@@ -10,9 +10,6 @@ export function addGlucoseLevel(bloodGLevel, dateTime) {
   user.glucoseLevels.push(bloodGLevel);
   user.glucoseTimes.push(dateTime);
   sessionStorage.setItem('person', JSON.stringify(user));
-
-  console.log(bloodGLevel);
-  console.log(dateTime);
   // Store number & time of day in User object session storage
 }
 
@@ -21,8 +18,6 @@ export function addInsulinLevel(bloodILevel, dateTime) {
   user.insulinLevels.push(bloodILevel);
   user.insulinTimes.push(dateTime);
   sessionStorage.setItem('person', JSON.stringify(user));
-  console.log(bloodILevel);
-  console.log(dateTime);
   // Store number & time of day in User object session storage
 }
 
@@ -32,17 +27,13 @@ export function calculateA1C() {
   let glucLvls = user.glucoseLevels;
   // Average bgl array
   let total = 0;
-  glucLvls.forEach((element, index) => {
+  glucLvls.forEach((element) => {
     const gLvl = parseInt(element);
-    console.log(index, element);
     total += gLvl;
-    console.log(total);
   });
   let avg = total / (glucLvls.length);
-  console.log(avg);
   // Calc A1C
   let a1C = (avg + 46.7) / 28.7;
-  console.log(a1C);
   // Add A1C to user obj
   user.a1C = a1C.toFixed(2);
   // Store in user object session storage
