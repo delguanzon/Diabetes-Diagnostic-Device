@@ -4,7 +4,6 @@ export default class User {
     this.name = name;
     this.age = age;
     this.dob = dob;
-    this.dailyCarbs = 0;
   }
 
   setBloodSugar(bs){
