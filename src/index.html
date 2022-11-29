@@ -12,21 +12,37 @@
   <title>Daily Diabetes Diagnostic Device</title>
 </head>
 <body>
-  <h1>Daily Diabetes Diagnostic Device</h1>
-  <form id="glucose-level">
-    <input type="number" id="glucosenumber">
-    <label for="glucosenumber">Glucose Number</label>
-    <button type="submit">Add Glucose Number</button>
-  </form>
-  <form id="total-carbs">
-    <input type="number" id="carbsday">
-    <label for="carbsday">Total Carbs/Day</label>
-    <button type="submit">Add Total Carbs</button>
-  </form>
-  <form id="activity-level">
-    <input type="number" id="totalminutes">
-    <label for="totalminutes">Total Activity Minutes</label>
-    <button type="submit">Add Total Minutes</button>
-  </form>
+  <div class="container">
+    <h1>Daily Diabetes Diagnostic Device</h1>
+    <form id="glucose-form">
+      <div class="mb-3">
+        <input type="number" id="glucose-goal">
+        <label for="glucose-goal">Glucose Goal</label>
+      </div>
+      <div class="mb-3">
+        <input type="number" id="glucose-level">
+        <input type="time" id="glucose-time" name="glucose-time" required>
+        <label for="glucose-level">Glucose Level & Time Logged</label>
+      </div>
+      <div class="mb-3">
+        <input type="number" id="insulin-level">
+        <input type="time" id="insulin-time" name="insulin-time" required>
+        <label for="insulin-level">Insulin Level & Time Logged</label>
+      </div>
+      <div class="mb-3">
+      <button type="submit">Add Blood Glucose Numbers</button>
+      </div>
+    </form>
+    <form id="total-carbs">
+      <input type="number" id="carbsday">
+      <label for="carbsday">Total Carbs/Day</label>
+      <button type="submit">Add Total Carbs</button>
+    </form>
+    <form id="activity-level">
+      <input type="number" id="totalminutes">
+      <label for="totalminutes">Total Activity Minutes</label>
+      <button type="submit">Add Total Minutes</button>
+    </form>
+  </div>
 </body>
 </html>
