@@ -57,7 +57,7 @@ function handleGlucoseSubmission() {
   event.preventDefault();
   // Retrieve inputs
   const glucLvl = document.getElementById('glucose-level').value;
-  const glucLvlTime = document.getElementById('glucose-time').value;
+  const glucLvlTime = new Date();
   // Run functions to add data to user object
   addGlucoseLevel(glucLvl, glucLvlTime);
   calculateA1C();
