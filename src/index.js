@@ -4,7 +4,7 @@ import './assets/css/styles.css';
 
 import { Activity } from './js/activity.js';
 import CarbService from './js/carb-services.js';
-import {conversion, addCarbs} from './js/carbs.js';
+import {conversion, addCarbs, addMealCarbs} from './js/carbs.js';
 import User from './js/user.js';
 import {updateGlucoseGoal, addGlucoseLevel, addInsulinLevel, calculateA1C} from './js/blood-glucose.js';
 
@@ -38,8 +38,18 @@ function printError() {
 function handleCarbSubmission() {
   event.preventDefault();
   const food = document.getElementById("type-of-food").value;
+  if (document.getElementById("meal-carbs").value !== null){
+    let mealCarb = document.getElementById("meal-carbs").value;
+    addMealCarbs(mealCarb);
+    let goal = document.getElementById('carb-goal').value
+    let user = JSON.parse(sessionStorage.getItem('person'));
+    document.getElementById("daily-carbs").innerText = `${user.dailyCarbs}g/${goal}g`;
+  } else {
+    console.log("here");
   getCarbs(food);
+  }
   document.getElementById("type-of-food").innerText = null;
+  document.getElementById("meal-carbs").innerText = null;
 }
 
 function handleGlucoseSubmission() {

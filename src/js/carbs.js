@@ -28,6 +28,13 @@ export function addCarbs (gramsWeight, carbs) {
   return totalCarbs;
 }
 
+export function addMealCarbs (mealCarbs) {
+  let user = JSON.parse(sessionStorage.getItem('person'));
+  let carbCount =  user.dailyCarbs + mealCarbs; 
+  user.dailyCarbs = carbCount;
+  sessionStorage.setItem('person', JSON.stringify(user));
+}
+
 
 /// 8 T = 100 g        (input/8) * 100 = grams
 // 24 t = 100 g       (input/24) * 100 = grams
