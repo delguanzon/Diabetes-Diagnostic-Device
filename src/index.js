@@ -47,6 +47,8 @@ function handleGlucoseGoalSubmission() {
   // Run function to add data to user object
   updateGlucoseGoal(glucGoal);
   // TODO: Add display function
+  // Reset form
+  resetInputElement(document.getElementById('glucose-goal'));
 }
 
 function handleGlucoseSubmission() {
@@ -58,6 +60,9 @@ function handleGlucoseSubmission() {
   addGlucoseLevel(glucLvl, glucLvlTime);
   calculateA1C();
   printGlucoseData();
+  // Reset form
+  resetInputElement(document.getElementById('glucose-level'));
+  resetInputElement(document.getElementById('glucose-time'));
 }
 
 function handleInsulinSubmission() {
@@ -68,6 +73,9 @@ function handleInsulinSubmission() {
   // Run functions to add data to user object
   addInsulinLevel(insLvl, insLvlTime);
   printInsulinData();
+  // Reset form
+  resetInputElement(document.getElementById('insulin-level'));
+  resetInputElement(document.getElementById('insulin-time'));
 }
 
 function dataToTable(array1Name, array1, array2Name, array2 ) {
@@ -127,6 +135,10 @@ function printInsulinData() {
 }
 
 //Utility Function
+function resetInputElement(docElement) {
+  docElement.value = null;
+}
+
 function checkBloodSugar(bloodSugar) {
   if (parseInt(bloodSugar) <= 100) {
     return "low";
