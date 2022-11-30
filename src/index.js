@@ -61,11 +61,12 @@ function handleGlucoseSubmission() {
   // Run functions to add data to user object
   addGlucoseLevel(glucLvl, glucLvlTime);
   calculateA1C();
+  // Print results
   printGlucoseData();
+  printA1CData();
   // Reset form
   resetInputElement(document.getElementById('glucose-level'));
   resetInputElement(document.getElementById('glucose-time'));
-  printA1CData();
 }
 
 function handleInsulinSubmission() {
@@ -81,7 +82,7 @@ function handleInsulinSubmission() {
   resetInputElement(document.getElementById('insulin-time'));
 }
 
-function dataToTable(array1Name, array1, array2Name, array2 ) {
+function dataToTable(array1Name, array1, array2Name, array2) {
   // Add data to table
   let table = document.createElement('table');
   table.setAttribute('class', 'table');
@@ -120,7 +121,12 @@ function printGlucoseData() {
   } else {
     document.querySelector('div#glucDiv').replaceChildren("");
   }
-  const table = dataToTable('Glucose Levels', user.glucoseLevels, 'Time Logged', user.glucoseTimes);
+  // Convert user.glucoseTimes array to array of printable timeStamps
+  let glucTimeArray = user.glucoseTimes;
+  for (let i = 0; i < user.glucoseTimes.length; i++) {
+    glucTimeArray[i] = toTimeStamp(user.glucoseTimes[i]);
+  }
+  const table = dataToTable('Glucose Levels', user.glucoseLevels, 'Time Logged', glucTimeArray);
   document.querySelector('div#glucDiv').append(table);
 }
 
@@ -150,6 +156,13 @@ function printA1CData() {
 }
 
 //Utility Function
+function toTimeStamp(dateValue) { 
+  // Convert date to hours:minutes
+  let date = new Date(dateValue);
+  let timeStamp = `${date.getHours()}:${date.getMinutes()}`;
+  return timeStamp;
+}
+
 function resetInputElement(docElement) {
   docElement.value = null;
 }
