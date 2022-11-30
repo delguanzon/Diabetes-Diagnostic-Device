@@ -4,13 +4,13 @@ import './assets/css/styles.css';
 
 import { Activity } from './js/activity.js';
 import CarbService from './js/carb-services.js';
-import {conversion, addCarbs, addMealCarbs} from './js/carbs.js';
+import { conversion, addCarbs, addMealCarbs } from './js/carbs.js';
 import User from './js/user.js';
-import {updateGlucoseGoal, addGlucoseLevel, addInsulinLevel, calculateA1C} from './js/blood-glucose.js';
+import { updateGlucoseGoal, addGlucoseLevel, addInsulinLevel, calculateA1C } from './js/blood-glucose.js';
 
 async function getCarbs(food) {
   const promise = await CarbService.getCarbs(food);
-  if(promise[0].text) {
+  if (promise[0].text) {
     sessionStorage.setItem(food, JSON.stringify(promise));
     carbsCalc(promise, food);
   } else {
@@ -36,18 +36,36 @@ function carbsCalc(data, food) {
 }
 
 function printElements(user) {
- // let user = JSON.parse(sessionStorage.getItem('person'));
+  // let user = JSON.parse(sessionStorage.getItem('person'));
   let goal = user.carbsGoal;
   const totalCarbs = user.dailyCarbs;
   console.log(totalCarbs + "here");
-  if (parseFloat(user.dailyCarbs) >= goal){
+  if (parseFloat(user.dailyCarbs) >= goal) {
     document.getElementById('carb-warning').innerText = 'You have reached your carb limit'
-  } else if (parseFloat(user.dailyCarbs) >= goal*.75) {
+  } else if (parseFloat(user.dailyCarbs) >= goal * .75) {
     document.getElementById('carb-warning').innerText = 'You have reached 75% of your carb limit'
-  } else if (parseFloat(user.dailyCarbs) >= goal*.5) {
+  } else if (parseFloat(user.dailyCarbs) >= goal * .5) {
     document.getElementById('carb-warning').innerText = 'You have reached 50% of your carb limit'
-  } 
+  }
   document.getElementById("daily-carbs").innerText = `${user.dailyCarbs}g / ${goal}g`;
+  let ulElement = document.createElement("ul");
+
+  
+  // let month = currentTime.getMonth() + 1;
+  // let day = currentTime.getDate();
+  // let year = currentTime.getFullYear();
+
+  for (let i = 0; i < user.food.length; i++) {
+    // let ulElement = document.createElement('ul')
+    // document.getElementById('carb-data-display').append(ulElement);
+    let currentTime = new Date(user.foodTimes[i]);
+    let liElement = document.createElement('li')
+    liElement.append(user.food[i] + " " + user.foodCarbs[i] + "g" + " " + currentTime);
+    // month + "/" + day + "/" + year);
+    ulElement.append(liElement);
+    
+  }
+  document.getElementById("carb-data-display").replaceChildren(ulElement);
 }
 
 function printError() {
@@ -105,7 +123,7 @@ function handleGlucoseSubmission() {
   printInsulinData();
 }
 
-function dataToTable(array1Name, array1, array2Name, array2 ) {
+function dataToTable(array1Name, array1, array2Name, array2) {
   // Add data to table
   let table = document.createElement('table');
   table.setAttribute('class', 'table');
@@ -213,8 +231,8 @@ function printInsulinData() {
     let tr = document.createElement('tr');
     let td1 = document.createElement('td');
     let td2 = document.createElement('td');
-    td1.innerText = user.insulinLevels[i]; 
-    td2.innerText = user.insulinTimes[i]; 
+    td1.innerText = user.insulinLevels[i];
+    td2.innerText = user.insulinTimes[i];
     tr.append(td1, td2);
     body.append(tr);
   }
@@ -252,8 +270,8 @@ function handleActivityFormSubmission(e) {
 
 
 
-  document.getElementById("warning-tag-high").setAttribute("hidden","");
-  document.getElementById("warning-msg-high").setAttribute("hidden","");
+  document.getElementById("warning-tag-high").setAttribute("hidden", "");
+  document.getElementById("warning-msg-high").setAttribute("hidden", "");
   e.preventDefault();
   //new code to do checkBloodSugar
   const bloodSugar = document.getElementById("beforeBs").value;
@@ -312,25 +330,25 @@ function displayTimer() {
 function handleEndTimer() {
   clearInterval(parseInt(sessionStorage.intId));
   document.getElementById("end-activity-form").removeAttribute("hidden");
-  
+
 }
 
 function handleEndActivityForm(e) {
   //TODO: hide Timer, reveal this form
   e.preventDefault();
   let activity = JSON.parse(sessionStorage.activity);
-  
+
   activity.steps = document.getElementById("steps").value;
   activity.currentBs = document.getElementById("afterBs").value;
   activity.timeEnd = Date.now();
-  
+
   console.log(activity);
   sessionStorage.activity = activity;
 
   let person = JSON.parse(sessionStorage.person);
   person.activities.push(activity);
   sessionStorage.setItem("person", JSON.stringify(person));
-  
+
 }
 
 window.addEventListener('load', function () {
@@ -343,8 +361,8 @@ window.addEventListener('load', function () {
   document.getElementById("activity-form").addEventListener("submit", handleActivityFormSubmission);
   this.document.getElementById("start").addEventListener("click", handleStartTimer);
   this.document.getElementById("end").addEventListener("click", handleEndTimer);
-  document.getElementById("end-activity-form").addEventListener("submit", handleEndActivityForm); 
-  document.querySelector('form#glucose-form').addEventListener('submit', handleGlucoseSubmission);  
+  document.getElementById("end-activity-form").addEventListener("submit", handleEndActivityForm);
+  document.querySelector('form#glucose-form').addEventListener('submit', handleGlucoseSubmission);
   document.getElementById("food-carbs").addEventListener("submit", handleCarbSubmission);
   document.getElementById("meal-carbs-button").addEventListener("click", handleMealSubmission);
   document.getElementById("carb-goal-button").addEventListener("click", handleCarbGoalSubmission);
