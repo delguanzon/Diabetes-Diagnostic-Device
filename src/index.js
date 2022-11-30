@@ -24,18 +24,22 @@ function carbsCalc(data, food) {
   let quantity = document.getElementById("quantity-of-food").value;
   let measurement = document.getElementById("measurement").value;
   const gramsWeight = conversion(quantity, measurement);
-  let ingredientCarbs = addCarbs(gramsWeight, carbs);
+  let ingredientCarbs = addCarbs(gramsWeight, carbs, user).toFixed(2);
+  console.log(ingredientCarbs);
   document.getElementById('carbs').innerText = `There are ${ingredientCarbs}g carbs in ${quantity} ${measurement} of ${data[0].text}`;
   user.food.push(food);
-  user.foodCarbs.push(ingredientCarbs);
+  user.foodCarbs.push(parseFloat(ingredientCarbs));
   user.foodTimes.push(Date.now());
-  printElements();
+  sessionStorage.setItem('person', JSON.stringify(user));
+  console.log(user.dailyCarbs + "before");
+  printElements(user);
 }
 
-function printElements() {
-  let user = JSON.parse(sessionStorage.getItem('person'));
+function printElements(user) {
+ // let user = JSON.parse(sessionStorage.getItem('person'));
   let goal = user.carbsGoal;
-  console.log(goal);
+  const totalCarbs = user.dailyCarbs;
+  console.log(totalCarbs + "here");
   if (parseFloat(user.dailyCarbs) >= goal){
     document.getElementById('carb-warning').innerText = 'You have reached your carb limit'
   } else if (parseFloat(user.dailyCarbs) >= goal*.75) {
@@ -43,7 +47,7 @@ function printElements() {
   } else if (parseFloat(user.dailyCarbs) >= goal*.5) {
     document.getElementById('carb-warning').innerText = 'You have reached 50% of your carb limit'
   } 
-  document.getElementById("daily-carbs").innerText = `Your daily carbs for today:${user.dailyCarbs}g / ${goal}g`;
+  document.getElementById("daily-carbs").innerText = `${user.dailyCarbs}g / ${goal}g`;
 }
 
 function printError() {
@@ -63,10 +67,11 @@ function handleMealSubmission() {
   const mealName = document.getElementById("meal-name").value;
   const mealCarbs = document.getElementById("meal-carbs").value;
   user.food.push(mealName);
-  user.foodCarbs.push(mealCarbs);
+  user.foodCarbs.push(parseFloat(mealCarbs));
   user.foodTimes.push(Date.now());
-  addMealCarbs(mealCarbs);
-  printElements();
+  addMealCarbs(mealCarbs, user);
+  sessionStorage.setItem('person', JSON.stringify(user));
+  printElements(user);
 }
 
 function handleCarbGoalSubmission() {

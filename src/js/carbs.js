@@ -15,26 +15,20 @@ export function conversion (quantity, measurement) {
   }
 } 
 
-export function addCarbs (gramsWeight, carbs) {
+export function addCarbs (gramsWeight, carbs, user) {
   const totalCarbs = gramsWeight * carbs;
-  let user = JSON.parse(sessionStorage.getItem('person'));
-  let carbCount =  parseFloat(user.dailyCarbs) + totalCarbs; 
-  user.dailyCarbs = carbCount.toFixed(2);
-  // console.log(user.dailyCarbs);
-  //To access person, do JSON.parse(sessionStorage.getItem(person))
-
-  sessionStorage.setItem('person', JSON.stringify(user));
-  //sessionStorage.setItem('totalCarbs', carbCount);
-  console.log(carbCount);
+  //let user = JSON.parse(sessionStorage.getItem('person'));
+  let carbCount =  parseFloat(user.dailyCarbs) + parseFloat(totalCarbs); 
+  user.dailyCarbs = parseInt(carbCount.toFixed(2));
+  //sessionStorage.setItem('person', JSON.stringify(user));
   return totalCarbs;
 }
 
-export function addMealCarbs (mealCarbs) {
-  let user = JSON.parse(sessionStorage.getItem('person'));
+export function addMealCarbs (mealCarbs, user) {
+  //let user = JSON.parse(sessionStorage.getItem('person'));
   let carbCount =  parseFloat(user.dailyCarbs) + parseInt(mealCarbs); 
-  console.log(mealCarbs)
-  user.dailyCarbs = carbCount.toFixed(2);
-  sessionStorage.setItem('person', JSON.stringify(user));
+  user.dailyCarbs = parseInt(carbCount.toFixed(2));
+  //sessionStorage.setItem('person', JSON.stringify(user));
 }
 
 // let carbCount = parseFloat(sessionStorage.getItem('totalCarbs')) + totalCarbs; 
