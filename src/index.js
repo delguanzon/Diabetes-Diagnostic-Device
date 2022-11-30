@@ -66,20 +66,18 @@ function handleGlucoseSubmission() {
   printA1CData();
   // Reset form
   resetInputElement(document.getElementById('glucose-level'));
-  resetInputElement(document.getElementById('glucose-time'));
 }
 
 function handleInsulinSubmission() {
   event.preventDefault();
   // Retrieve inputs
   const insLvl = document.getElementById('insulin-level').value;
-  const insLvlTime = document.getElementById('insulin-time').value;
+  const insLvlTime = new Date();
   // Run functions to add data to user object
   addInsulinLevel(insLvl, insLvlTime);
   printInsulinData();
   // Reset form
   resetInputElement(document.getElementById('insulin-level'));
-  resetInputElement(document.getElementById('insulin-time'));
 }
 
 function dataToTable(array1Name, array1, array2Name, array2) {
@@ -139,7 +137,12 @@ function printInsulinData() {
   } else {
     document.querySelector('div#insDiv').replaceChildren('');
   }
-  const table = dataToTable('Insulin Level', user.insulinLevels, 'Time Logged', user.insulinTimes);
+  // Convert user.glucoseTimes array to array of printable timeStamps
+  let insTimeArray = user.insulinTimes;
+  for (let i = 0; i < user.insulinTimes.length; i++) {
+    insTimeArray[i] = toTimeStamp(user.insulinTimes[i]);
+  }
+  const table = dataToTable('Insulin Level', user.insulinLevels, 'Time Logged', insTimeArray);
   document.querySelector('div#insDiv').append(table);
 }
 

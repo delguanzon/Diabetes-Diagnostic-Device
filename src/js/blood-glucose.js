@@ -42,3 +42,8 @@ export function calculateA1C() {
   // Store in user object session storage
   sessionStorage.setItem('person', JSON.stringify(user));
 }
+
+// bloodGlucoseChecke -> Using latest gluc input
+  // If gluc level above OR below range, return red alert
+  // Else if gluc level within 10% of top or bottom of range, return yellow warning
+  // Else, return green success
