@@ -51,7 +51,6 @@ export function bloodGlucoseChecker() {
   const top = parseInt(user.glucoseRangeHigh);
   const glucLevelArray = user.glucoseLevels;
   const glucLatestLevel = parseInt(glucLevelArray[glucLevelArray.length - 1]);
-  console.log('latest level' + glucLatestLevel);
   // If gluc level above OR below range, return red alert
   if (glucLatestLevel > top || glucLatestLevel < bottom) {
     user.glucStatus = 'redAlert';

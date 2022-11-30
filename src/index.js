@@ -121,10 +121,12 @@ function printGlucoseData() {
   }
   // Convert user.glucoseTimes array to array of printable timeStamps
   let glucTimeArray = user.glucoseTimes;
+  let glucLevelsArray = user.glucoseLevels;
   for (let i = 0; i < user.glucoseTimes.length; i++) {
     glucTimeArray[i] = toTimeStamp(user.glucoseTimes[i]);
+    glucLevelsArray[i] = glucLevelsArray[i] + ' mg/dL';
   }
-  const table = dataToTable('Glucose Levels', user.glucoseLevels, 'Time Logged', glucTimeArray);
+  const table = dataToTable('Glucose Levels', glucLevelsArray, 'Time Logged', glucTimeArray);
   // Display alert based on logic (if red, else if yellow, else green)
   if (user.glucStatus){
     let alertContainer = document.createElement('div');
@@ -141,11 +143,14 @@ function printGlucoseData() {
     } 
     document.querySelector('div#glucDiv').prepend(alertContainer);
   }
-  // Display A1C 
-  let a1C = `A1C ${user.a1C}`;
+  // Display Glucose Summary Header & A1C 
+  let summaryTitle = `Glucose Levels`;
   let h3 = document.createElement("h3");
-  h3.append(a1C)
-  document.querySelector('div#glucDiv').append(h3);
+  h3.append(summaryTitle);
+  let a1C = `A1C ${user.a1C}`;
+  let h5 = document.createElement("h5");
+  h5.append(a1C);
+  document.querySelector('div#glucDiv').append(h3, h5);
   document.querySelector('div#glucDiv').append(table);
 }
 
