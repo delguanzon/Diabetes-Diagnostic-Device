@@ -4,13 +4,13 @@ import './assets/css/styles.css';
 
 import { Activity } from './js/activity.js';
 import CarbService from './js/carb-services.js';
-import {conversion, addCarbs} from './js/carbs.js';
+import { conversion, addCarbs } from './js/carbs.js';
 import User from './js/user.js';
-import {updateGlucoseGoal, addGlucoseLevel, addInsulinLevel, calculateA1C} from './js/blood-glucose.js';
+import { updateGlucoseGoal, addGlucoseLevel, addInsulinLevel, calculateA1C } from './js/blood-glucose.js';
 
 async function getCarbs(food, user) {
   const promise = await CarbService.getCarbs(food);
-  if(promise[0].text) {
+  if (promise[0].text) {
     sessionStorage.setItem(food, JSON.stringify(promise));
     printElements(promise, user);
   } else {
@@ -63,7 +63,7 @@ function handleGlucoseSubmission() {
   printInsulinData();
 }
 
-function dataToTable(array1Name, array1, array2Name, array2 ) {
+function dataToTable(array1Name, array1, array2Name, array2) {
   // Add data to table
   let table = document.createElement('table');
   table.setAttribute('class', 'table');
@@ -171,8 +171,8 @@ function printInsulinData() {
     let tr = document.createElement('tr');
     let td1 = document.createElement('td');
     let td2 = document.createElement('td');
-    td1.innerText = user.insulinLevels[i]; 
-    td2.innerText = user.insulinTimes[i]; 
+    td1.innerText = user.insulinLevels[i];
+    td2.innerText = user.insulinTimes[i];
     tr.append(td1, td2);
     body.append(tr);
   }
@@ -190,13 +190,28 @@ function checkBloodSugar(bloodSugar) {
   }
 }
 
+
+function resetActivity() {
+  document.getElementById("beforeBs").value = "";
+  document.getElementById("afterBs").value = "";
+  document.getElementById("steps").value = "";
+  document.getElementById("pause").setAttribute("disabled", "");
+  document.getElementById("start").removeAttribute("disabled");
+  document.getElementById("end").removeAttribute("disabled");
+  document.getElementById("steps").value = "";
+  document.getElementById("dispTimer").replaceChildren(`00:00:00`);
+
+}
+//Activity UI Logic
+
 function handleNewActivity() {
   document.getElementById("new-activity").removeAttribute("hidden");
+  document.getElementById("activity-form").removeAttribute("hidden");
   document.getElementById("new-activity-btn").setAttribute("hidden", "");
 }
 
 function handleActivityFormSubmission(e) {
-
+  
   let lowTag = document.getElementById("warning-tag-low");
   let lowMsg = document.getElementById("warning-msg-low");
   let highTag = document.getElementById("warning-tag-high");
@@ -210,8 +225,8 @@ function handleActivityFormSubmission(e) {
 
 
 
-  document.getElementById("warning-tag-high").setAttribute("hidden","");
-  document.getElementById("warning-msg-high").setAttribute("hidden","");
+  document.getElementById("warning-tag-high").setAttribute("hidden", "");
+  document.getElementById("warning-msg-high").setAttribute("hidden", "");
   e.preventDefault();
   //new code to do checkBloodSugar
   const bloodSugar = document.getElementById("beforeBs").value;
@@ -222,25 +237,29 @@ function handleActivityFormSubmission(e) {
     highTag.removeAttribute("hidden");
     highMsg.removeAttribute("hidden");
   }
-  else document.getElementById("timer").removeAttribute("hidden");
+  document.getElementById("timer").removeAttribute("hidden");
+  sessionStorage.sec = 0;
+  sessionStorage.min = 0;
+  sessionStorage.hour = 0;
 }
 
 function handleStartTimer() {
   const bloodSugar = document.getElementById("beforeBs").value;
-  const activity = new Activity(bloodSugar, Date.now());
   let intId = parseInt(sessionStorage.intId);
-  sessionStorage.sec = 0;
-  sessionStorage.min = 0;
-  sessionStorage.hour = 0;
 
+  
   if (intId != null) {
     clearInterval(intId);
   }
   intId = setInterval(displayTimer, 1000);
   sessionStorage.intId = intId;
-  sessionStorage.setItem("activity", JSON.stringify(activity));
   //re-hide warning messages and activity form
   document.getElementById("activity-form").setAttribute("hidden", "");
+  document.getElementById("pause").removeAttribute("disabled");
+  document.getElementById("start").setAttribute("disabled", "");
+  const activity = new Activity(bloodSugar, Date.now());
+  console.log(activity);
+  sessionStorage.setItem("activity", JSON.stringify(activity));
 }
 
 function displayTimer() {
@@ -270,25 +289,69 @@ function displayTimer() {
 function handleEndTimer() {
   clearInterval(parseInt(sessionStorage.intId));
   document.getElementById("end-activity-form").removeAttribute("hidden");
+  let activity = JSON.parse(sessionStorage.activity);
+  activity.timeEnd = Date.now();
+  sessionStorage.setItem("activity", JSON.stringify(activity));
+
+}
+
+function handlePauseTimer() {
+  clearInterval(parseInt(sessionStorage.intId));
+  document.getElementById("pause").setAttribute("disabled", "");
+  document.getElementById("start").removeAttribute("disabled");
   
+
 }
 
 function handleEndActivityForm(e) {
-  //TODO: hide Timer, reveal this form
   e.preventDefault();
   let activity = JSON.parse(sessionStorage.activity);
-  
+
   activity.steps = document.getElementById("steps").value;
-  activity.currentBs = document.getElementById("afterBs").value;
-  activity.timeEnd = Date.now();
-  
+  activity.currentBs = document.getElementById("afterBs").value; 
+
   console.log(activity);
-  sessionStorage.activity = activity;
 
   let person = JSON.parse(sessionStorage.person);
   person.activities.push(activity);
   sessionStorage.setItem("person", JSON.stringify(person));
-  
+  displayActivity();
+
+  document.getElementById("new-activity-btn").removeAttribute("hidden");
+  document.getElementById("end-activity-form").setAttribute("hidden", "");
+  document.getElementById("timer").setAttribute("hidden", "");
+  document.getElementById("activity-form").setAttribute("hidden", "");
+  resetActivity();
+}
+
+function displayActivity() {
+  const log = document.getElementById("activity-log");
+  const person = JSON.parse(sessionStorage.getItem("person"));
+  console.log(person);
+  person.activities.forEach((activity) => {
+    const act = new Activity(activity.beforeBs, activity.timeStart);
+    act.setTimeEnd(activity.timeEnd);
+    act.setSteps(activity.steps);
+    console.log(act);
+    log.replaceChildren(`Steps: ${activity.steps} Elapse Time: ${act.getElapseTime()} Date:  ${act.getActivityDate()}`);
+  });
+}
+
+//temp
+function displayTempActivity() {
+  const person = JSON.parse(sessionStorage.getItem("person"));
+  let displayDiv = document.getElementById("report-temp");
+
+  for (const activity of person.activities) {
+    let p = document.createElement("p");
+    for (const [key, value] of Object.entries(activity)) {
+      // add IF key vs condition 3000 steps, ~20min workout good, bad, great etc.
+      p.append(`${
+        key
+      }: ${value}`);
+    }
+    displayDiv.append(p);
+  }
 }
 
 window.addEventListener('load', function () {
@@ -299,11 +362,13 @@ window.addEventListener('load', function () {
   sessionStorage.setItem("person", JSON.stringify(person));
   document.getElementById("new-activity-btn").addEventListener("click", handleNewActivity);
   document.getElementById("activity-form").addEventListener("submit", handleActivityFormSubmission);
-  this.document.getElementById("start").addEventListener("click", handleStartTimer);
-  this.document.getElementById("end").addEventListener("click", handleEndTimer);
-  document.getElementById("end-activity-form").addEventListener("submit", handleEndActivityForm); 
-  document.querySelector('form#glucose-form').addEventListener('submit', handleGlucoseSubmission);  
+  document.getElementById("start").addEventListener("click", handleStartTimer);
+  document.getElementById("end").addEventListener("click", handleEndTimer);
+  document.getElementById("pause").addEventListener("click", handlePauseTimer);
+  document.getElementById("end-activity-form").addEventListener("submit", handleEndActivityForm);
+  document.querySelector('form#glucose-form').addEventListener('submit', handleGlucoseSubmission);
   sessionStorage.setItem('totalCarbs', 0);
   document.getElementById("food-carbs").addEventListener("submit", handleCarbSubmission);
-
+  // temp
+  document.getElementById("report-btn").addEventListener("click", displayTempActivity);
 });
