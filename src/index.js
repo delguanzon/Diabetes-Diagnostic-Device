@@ -43,12 +43,14 @@ function handleCarbSubmission() {
 function handleGlucoseGoalSubmission() {
   event.preventDefault();
   // Retrieve inputs
-  const glucGoal = document.getElementById('glucose-goal').value;
+  const glucRangeLow = document.getElementById('glucose-range-low').value;
+  const glucRangeHigh = document.getElementById('glucose-range-high').value;
   // Run function to add data to user object
-  updateGlucoseGoal(glucGoal);
+  updateGlucoseGoal(glucRangeLow, glucRangeHigh);
   // TODO: Add display function
   // Reset form
-  resetInputElement(document.getElementById('glucose-goal'));
+  resetInputElement(document.getElementById('glucose-range-low'));
+  resetInputElement(document.getElementById('glucose-range-high'));
 }
 
 function handleGlucoseSubmission() {
