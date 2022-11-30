@@ -12,19 +12,23 @@ async function getCarbs(food) {
   const promise = await CarbService.getCarbs(food);
   if(promise[0].text) {
     sessionStorage.setItem(food, JSON.stringify(promise));
-    carbsCalc(promise);
+    carbsCalc(promise, food);
   } else {
     printError();
   }
 }
 
-function carbsCalc(data) {
+function carbsCalc(data, food) {
   const carbs = data[0].parsed[0].food.nutrients.CHOCDF;
+  let user = JSON.parse(sessionStorage.getItem('person'));
   let quantity = document.getElementById("quantity-of-food").value;
   let measurement = document.getElementById("measurement").value;
   const gramsWeight = conversion(quantity, measurement);
-  let totalCarbs = addCarbs(gramsWeight, carbs);
-  document.getElementById('carbs').innerText = `There are ${totalCarbs}g carbs in ${quantity} ${measurement} of ${data[0].text}`;
+  let ingredientCarbs = addCarbs(gramsWeight, carbs);
+  document.getElementById('carbs').innerText = `There are ${ingredientCarbs}g carbs in ${quantity} ${measurement} of ${data[0].text}`;
+  user.food.push(food);
+  user.foodCarbs.push(ingredientCarbs);
+  user.foodTimes.push(Date.now());
   printElements();
 }
 
@@ -55,7 +59,12 @@ function handleCarbSubmission() {
 
 function handleMealSubmission() {
   event.preventDefault();
+  let user = JSON.parse(sessionStorage.getItem('person'));
+  const mealName = document.getElementById("meal-name").value;
   const mealCarbs = document.getElementById("meal-carbs").value;
+  user.food.push(mealName);
+  user.foodCarbs.push(mealCarbs);
+  user.foodTimes.push(Date.now());
   addMealCarbs(mealCarbs);
   printElements();
 }
