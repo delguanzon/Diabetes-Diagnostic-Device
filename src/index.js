@@ -12,44 +12,74 @@ async function getCarbs(food) {
   const promise = await CarbService.getCarbs(food);
   if(promise[0].text) {
     sessionStorage.setItem(food, JSON.stringify(promise));
-    printElements(promise);
+    carbsCalc(promise);
   } else {
     printError();
   }
 }
 
-function printElements(data) {
+function carbsCalc(data) {
   const carbs = data[0].parsed[0].food.nutrients.CHOCDF;
   let quantity = document.getElementById("quantity-of-food").value;
   let measurement = document.getElementById("measurement").value;
   const gramsWeight = conversion(quantity, measurement);
   let totalCarbs = addCarbs(gramsWeight, carbs);
-  let user = JSON.parse(sessionStorage.getItem('person'));
-  let goal = document.getElementById('carb-goal').value
   document.getElementById('carbs').innerText = `There are ${totalCarbs}g carbs in ${quantity} ${measurement} of ${data[0].text}`;
-  document.getElementById("daily-carbs").innerText = `${user.dailyCarbs}g/${goal}g`;
-  //let user = JSON.parse(sessionStorage.getItem('person')); user.dailyCarbs
+  printElements(totalCarbs)
+}
+
+function printElements(totalCarbs) {
+  let user = JSON.parse(sessionStorage.getItem('person'));
+  let goal = document.getElementById('carb-goal').value;
+  //document.getElementById('carbs').innerText = `There are ${totalCarbs}g carbs in ${quantity} ${measurement} of ${data[0].text}`;
+  document.getElementById("daily-carbs").innerText = `Your daily carbs for today,${user.dailyCarbs}g / goal${goal}g`;
 }
 
 function printError() {
   document.getElementById('carbs').innerText = "somethings wrong";
 }
 
+// function printElements(data, user) {
+//   const carbs = data[0].parsed[0].food.nutrients.CHOCDF;
+//   let quantity = document.getElementById("quantity-of-food").value;
+//   let measurement = document.getElementById("measurement").value;
+//   const gramsWeight = conversion(quantity, measurement);
+//   let totalCarbs = addCarbs(user, gramsWeight, carbs);
+//   document.getElementById('carbs').innerText = `There are ${totalCarbs}g carbs in ${quantity} ${measurement} of ${data[0].text}`;
+//   document.getElementById("daily-carbs").innerText = sessionStorage.getItem('totalCarbs');
+// }
+
+// function handleCarbSubmission() {
+//   event.preventDefault();
+//   const food = document.getElementById("type-of-food").value;
+//   if (document.getElementById("meal-carbs").value !== null){
+//     let mealCarb = document.getElementById("meal-carbs").value;
+//     addMealCarbs(mealCarb);
+//     let goal = document.getElementById('carb-goal').value
+//     let user = JSON.parse(sessionStorage.getItem('person'));
+//     document.getElementById("daily-carbs").innerText = `${user.dailyCarbs}g/${goal}g`;
+//   } else {
+//     console.log("here");
+//   getCarbs(food);
+//   }
+//   document.getElementById("type-of-food").innerText = null;
+//   document.getElementById("meal-carbs").innerText = null;
+// }
+
 function handleCarbSubmission() {
   event.preventDefault();
+  let user = new User("Henry", "25", "8/30/1997");
   const food = document.getElementById("type-of-food").value;
-  if (document.getElementById("meal-carbs").value !== null){
-    let mealCarb = document.getElementById("meal-carbs").value;
-    addMealCarbs(mealCarb);
-    let goal = document.getElementById('carb-goal').value
-    let user = JSON.parse(sessionStorage.getItem('person'));
-    document.getElementById("daily-carbs").innerText = `${user.dailyCarbs}g/${goal}g`;
-  } else {
-    console.log("here");
-  getCarbs(food);
-  }
+  getCarbs(food, user);
   document.getElementById("type-of-food").innerText = null;
-  document.getElementById("meal-carbs").innerText = null;
+}
+
+function handleMealSubmission() {
+  event.preventDefault();
+  const mealCarbs = document.getElementById("meal-carbs").value;
+  addMealCarbs(mealCarbs);
+  prin
+  // print
 }
 
 function handleGlucoseSubmission() {
@@ -316,5 +346,6 @@ window.addEventListener('load', function () {
   document.getElementById("end-activity-form").addEventListener("submit", handleEndActivityForm); 
   document.querySelector('form#glucose-form').addEventListener('submit', handleGlucoseSubmission);  
   document.getElementById("food-carbs").addEventListener("submit", handleCarbSubmission);
+  document.getElementById("meal-carbs-button").addEventListener("click", handleMealSubmission);
 
 });

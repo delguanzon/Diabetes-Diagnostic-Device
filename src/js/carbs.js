@@ -19,7 +19,7 @@ export function addCarbs (gramsWeight, carbs) {
   const totalCarbs = gramsWeight * carbs;
   let user = JSON.parse(sessionStorage.getItem('person'));
   let carbCount =  user.dailyCarbs + totalCarbs; 
-  user.dailyCarbs = carbCount.toFixed(2);
+  user.dailyCarbs = carbCount;
   //To access person, do JSON.parse(sessionStorage.getItem(person))
 
   sessionStorage.setItem('person', JSON.stringify(user));
