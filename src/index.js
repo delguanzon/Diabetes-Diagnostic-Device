@@ -190,6 +190,36 @@ function checkBloodSugar(bloodSugar) {
   }
 }
 
+function updateProgressBar(steps, time) {
+
+  
+  const floatdiv = document.getElementById("floatdiv");
+  const wProgressBar = document.getElementById("workout-progress");
+  const wGoal = 1200;
+  const wPercent = (time/wGoal)*100;
+  console.log(`Total Time: ${time}`);
+  wProgressBar.setAttribute("style", `width: ${wPercent}%`);
+  wProgressBar.replaceChildren(`${wPercent}%`);
+
+  const progressBar = document.getElementById("steps-progress");
+  const goal = 3000;
+  const percent = (steps/goal)*100;
+  progressBar.setAttribute("style", `width: ${percent}%`);
+  progressBar.replaceChildren(`${steps} out of 3000`);
+
+
+  // find time of all logged activities, add, and check against fitnessGoal
+  // totalTime and fitnessGoal are left in seconds
+  let h4 = document.createElement("h4");
+  h4.append("Progress Report:");
+  
+  if (time < (wGoal)) {
+    floatdiv.append(`Heads Up! Your total workout time ${time} was short of your daily goal of 20 mins`);
+  } else if (time >= (wGoal)) {
+    floatdiv.append(`Your total workout time today has met or exceeded your daily goal of ${wGoal}! Keep up the good work!`);
+  }
+  
+}
 
 function resetActivity() {
   document.getElementById("beforeBs").value = "";
@@ -205,13 +235,14 @@ function resetActivity() {
 //Activity UI Logic
 
 function handleNewActivity() {
+  
   document.getElementById("new-activity").removeAttribute("hidden");
   document.getElementById("activity-form").removeAttribute("hidden");
   document.getElementById("new-activity-btn").setAttribute("hidden", "");
 }
 
 function handleActivityFormSubmission(e) {
-  
+
   let lowTag = document.getElementById("warning-tag-low");
   let lowMsg = document.getElementById("warning-msg-low");
   let highTag = document.getElementById("warning-tag-high");
@@ -246,8 +277,11 @@ function handleActivityFormSubmission(e) {
 function handleStartTimer() {
   const bloodSugar = document.getElementById("beforeBs").value;
   let intId = parseInt(sessionStorage.intId);
+  let person = JSON.parse(sessionStorage.person);
+  person.glucoseLevels.push(bloodSugar);
+  person.glucoseTimes.push(Date.now());
+  sessionStorage.setItem("person", JSON.stringify(person));
 
-  
   if (intId != null) {
     clearInterval(intId);
   }
@@ -299,7 +333,7 @@ function handlePauseTimer() {
   clearInterval(parseInt(sessionStorage.intId));
   document.getElementById("pause").setAttribute("disabled", "");
   document.getElementById("start").removeAttribute("disabled");
-  
+
 
 }
 
@@ -308,14 +342,16 @@ function handleEndActivityForm(e) {
   let activity = JSON.parse(sessionStorage.activity);
 
   activity.steps = document.getElementById("steps").value;
-  activity.currentBs = document.getElementById("afterBs").value; 
+  activity.currentBs = document.getElementById("afterBs").value;
 
   console.log(activity);
 
   let person = JSON.parse(sessionStorage.person);
   person.activities.push(activity);
+  person.glucoseLevels.push(activity.currentBs);
+  person.glucoseTimes.push(Date.now());
   sessionStorage.setItem("person", JSON.stringify(person));
-  displayActivity();
+  displayRecentActivity();
 
   document.getElementById("new-activity-btn").removeAttribute("hidden");
   document.getElementById("end-activity-form").setAttribute("hidden", "");
@@ -324,33 +360,65 @@ function handleEndActivityForm(e) {
   resetActivity();
 }
 
-function displayActivity() {
-  const log = document.getElementById("activity-log");
+function displayRecentActivity() {
+  const log = document.getElementById("recent-activity");
   const person = JSON.parse(sessionStorage.getItem("person"));
+  let totalSteps = 0;
+  let totalTime = 0;
   console.log(person);
   person.activities.forEach((activity) => {
     const act = new Activity(activity.beforeBs, activity.timeStart);
     act.setTimeEnd(activity.timeEnd);
     act.setSteps(activity.steps);
     console.log(act);
-    log.replaceChildren(`Steps: ${activity.steps} Elapse Time: ${act.getElapseTime()} Date:  ${act.getActivityDate()}`);
+    let x = act.getElapseTime();
+    let elapseTime = x > 60 ? Math.round(x / 60) + " min " + (x % 60).toFixed(2) + " sec" : x.toFixed() + " sec";
+
+    log.replaceChildren(` Date: ${act.getActivityDate()} Steps: ${activity.steps} Elapse Time: ${elapseTime}`);
+    totalSteps += parseInt(activity.steps);
+    totalTime += parseInt(x); 
   });
+  updateProgressBar(totalSteps, totalTime);
 }
 
-//temp
-function displayTempActivity() {
+// logs activity data, adds activity data as a daily entry
+function logActivity() {
+  //document.querySelector(".floating-div").removeAttribute("hidden");
   const person = JSON.parse(sessionStorage.getItem("person"));
-  let displayDiv = document.getElementById("report-temp");
+  let displayUl = document.createElement("ul");
+  displayUl.setAttribute("id", "display-day-ul");
 
   for (const activity of person.activities) {
-    let p = document.createElement("p");
+    let date = new Date(activity.timeStart);
+    
+    // Display time header for each log
+    displayUl.append(`${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()} @ ${date.toTimeString()}`);
     for (const [key, value] of Object.entries(activity)) {
-      // add IF key vs condition 3000 steps, ~20min workout good, bad, great etc.
-      p.append(`${
-        key
-      }: ${value}`);
+      let li = document.createElement("li");
+
+      // find time of workout
+      if (key === "timeStart") {
+        let start = new Date(value);
+        let end = new Date(activity.timeEnd);
+        let time = (end.getTime() - start.getTime()) / 1000;
+        if (time > 60 && time < 3600) {
+          time = Math.round(time / 60).toString() + "min " + (time % 60).toFixed(2).toString() + "sec";
+        } else if (time > 3600) {
+          time = Math.round((time / 60) / 60).toString() + "hr " + ((time % 60) * 60).toString() + "min"
+            + (((time % 60) * 60) % 60).toString() + "sec";
+        }
+
+        li.append(`time: ${time}`);
+        displayUl.append(li);
+        continue;
+      } else if (key === "timeEnd") {
+        continue;
+      }
+
+      li.append(`${key}: ${value}`);
+      displayUl.append(li);
     }
-    displayDiv.append(p);
+    document.getElementById("activity-log").replaceChildren(displayUl);
   }
 }
 
@@ -370,5 +438,5 @@ window.addEventListener('load', function () {
   sessionStorage.setItem('totalCarbs', 0);
   document.getElementById("food-carbs").addEventListener("submit", handleCarbSubmission);
   // temp
-  document.getElementById("report-btn").addEventListener("click", displayTempActivity);
+  document.getElementById("report-btn").addEventListener("click", logActivity);
 });

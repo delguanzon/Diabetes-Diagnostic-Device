@@ -11,7 +11,7 @@ export default class User {
     this.insulinTimes = [];
   }
 
-  setBloodSugar(bs){
+  setBloodSugar(bs) {
     this.bs = bs;
   }
 
