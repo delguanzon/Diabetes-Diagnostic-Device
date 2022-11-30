@@ -15,10 +15,15 @@ export function conversion (quantity, measurement) {
   }
 } 
 
-export function addCarbs (user, gramsWeight, carbs) {
+export function addCarbs (gramsWeight, carbs) {
   const totalCarbs = gramsWeight * carbs;
-  let carbCount = parseFloat(sessionStorage.getItem('totalCarbs')) + totalCarbs; 
-  sessionStorage.setItem('totalCarbs', carbCount);
+  let user = JSON.parse(sessionStorage.getItem('person'));
+  let carbCount =  user.dailyCarbs + totalCarbs; 
+  user.dailyCarbs = carbCount.toFixed(2);
+  //To access person, do JSON.parse(sessionStorage.getItem(person))
+
+  sessionStorage.setItem('person', JSON.stringify(user));
+  //sessionStorage.setItem('totalCarbs', carbCount);
   console.log(carbCount);
   return totalCarbs;
 }
