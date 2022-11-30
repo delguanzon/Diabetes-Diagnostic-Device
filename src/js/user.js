@@ -10,6 +10,7 @@ export default class User {
     this.insulinLevels = [];
     this.insulinTimes = [];
     this.dailyCarbs = 0;
+    this.carbsGoal = 0;
   }
 
   setBloodSugar(bs){

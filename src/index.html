@@ -28,32 +28,37 @@
       </div>
       <div class="mb-3">
       <button type="submit">Add Blood Glucose Numbers</button>
-      </div>
-    </form>
-    <form id="food-carbs">
+    </div>
+    </form><br>
     <input type="number" id="carb-goal" placeholder="Daily Carb Goal (g)">
-    <!-- <label for="carb-goal">Daily Carb Goal (g)</label> -->
+    <button type="button" id="carb-goal-button">Enter Carb Goal</button><br>
+    <div class="hidden-carb-form" id="carb-inputs">
+      <form id="food-carbs">
+      <!-- <label for="carb-goal">Daily Carb Goal (g)</label> -->
+      <br>
+      <input type="text" id="type-of-food" placeholder="Enter Ingredient"><br>
+      <!-- <label for="type-of-food">Enter ingredient</label><br> -->
+      <input type="number" id="quantity-of-food" step=0.01 min=0 placeholder="Enter Quantity">
+      <!-- <label for="quantity-of-food">Enter quantity</label> -->
+      <select name="measure-option" id="measurement">
+        <option value="">--Choose measurement--</option>
+        <option value="grams">grams</option>
+        <option value="ounces">ounces</option>
+        <option value="pounds">pounds</option>
+        <option value="cups">cups</option>
+        <option value="tablespoons">tablespoons</option>
+        <option value="teaspoons">teaspoons</option>
+      </select>
+      </label><br>
+      <button type="submit">Add Carbs</button>
+    </form>
     <br>
-    <input type="text" id="type-of-food" placeholder="Enter Ingredient"><br>
-    <!-- <label for="type-of-food">Enter ingredient</label><br> -->
-    <input type="number" id="quantity-of-food" step=0.01 min=0 placeholder="Enter Quantity">
-    <!-- <label for="quantity-of-food">Enter quantity</label> -->
-    <select name="measure-option" id="measurement">
-      <option value="">--Choose measurement--</option>
-      <option value="grams">grams</option>
-      <option value="ounces">ounces</option>
-      <option value="pounds">pounds</option>
-      <option value="cups">cups</option>
-      <option value="tablespoons">tablespoons</option>
-      <option value="teaspoons">teaspoons</option>
-    </select>
-    </label><br>
-    <button type="submit">Add Carbs</button>
-  </form>
-  <input type="number" id="meal-carbs" placeholder="Enter Meal Carbs"><br>
-  <button type="button" id="meal-carbs-button">Add Meal Carbs</button>
-  <p id="carbs"></p>
-  <p>These are your total carbs for the day: <span id="daily-carbs"></span></p>
+    <input type="number" id="meal-carbs" placeholder="Enter Meal Carbs"><br>
+    <button type="button" id="meal-carbs-button">Add Meal Carbs</button>
+    <p id="carbs"></p>
+    <p>These are your total carbs for the day: <span id="daily-carbs"></span></p>
+    <p id='carb-warning'></p>
+  </div>
   
   <div id="activity">
     <h2>Activity</h2>

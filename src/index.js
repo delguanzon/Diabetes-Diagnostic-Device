@@ -25,52 +25,31 @@ function carbsCalc(data) {
   const gramsWeight = conversion(quantity, measurement);
   let totalCarbs = addCarbs(gramsWeight, carbs);
   document.getElementById('carbs').innerText = `There are ${totalCarbs}g carbs in ${quantity} ${measurement} of ${data[0].text}`;
-  printElements(totalCarbs)
+  printElements();
 }
 
-function printElements(totalCarbs) {
+function printElements() {
   let user = JSON.parse(sessionStorage.getItem('person'));
-  let goal = document.getElementById('carb-goal').value;
-  //document.getElementById('carbs').innerText = `There are ${totalCarbs}g carbs in ${quantity} ${measurement} of ${data[0].text}`;
-  document.getElementById("daily-carbs").innerText = `Your daily carbs for today,${user.dailyCarbs}g / goal${goal}g`;
+  let goal = user.carbsGoal;
+  console.log(goal);
+  if (parseFloat(user.dailyCarbs) >= goal){
+    document.getElementById('carb-warning').innerText = 'You have reached your carb limit'
+  } else if (parseFloat(user.dailyCarbs) >= goal*.75) {
+    document.getElementById('carb-warning').innerText = 'You have reached 75% of your carb limit'
+  } else if (parseFloat(user.dailyCarbs) >= goal*.5) {
+    document.getElementById('carb-warning').innerText = 'You have reached 50% of your carb limit'
+  } 
+  document.getElementById("daily-carbs").innerText = `Your daily carbs for today:${user.dailyCarbs}g / ${goal}g`;
 }
 
 function printError() {
   document.getElementById('carbs').innerText = "somethings wrong";
 }
 
-// function printElements(data, user) {
-//   const carbs = data[0].parsed[0].food.nutrients.CHOCDF;
-//   let quantity = document.getElementById("quantity-of-food").value;
-//   let measurement = document.getElementById("measurement").value;
-//   const gramsWeight = conversion(quantity, measurement);
-//   let totalCarbs = addCarbs(user, gramsWeight, carbs);
-//   document.getElementById('carbs').innerText = `There are ${totalCarbs}g carbs in ${quantity} ${measurement} of ${data[0].text}`;
-//   document.getElementById("daily-carbs").innerText = sessionStorage.getItem('totalCarbs');
-// }
-
-// function handleCarbSubmission() {
-//   event.preventDefault();
-//   const food = document.getElementById("type-of-food").value;
-//   if (document.getElementById("meal-carbs").value !== null){
-//     let mealCarb = document.getElementById("meal-carbs").value;
-//     addMealCarbs(mealCarb);
-//     let goal = document.getElementById('carb-goal').value
-//     let user = JSON.parse(sessionStorage.getItem('person'));
-//     document.getElementById("daily-carbs").innerText = `${user.dailyCarbs}g/${goal}g`;
-//   } else {
-//     console.log("here");
-//   getCarbs(food);
-//   }
-//   document.getElementById("type-of-food").innerText = null;
-//   document.getElementById("meal-carbs").innerText = null;
-// }
-
 function handleCarbSubmission() {
   event.preventDefault();
-  let user = new User("Henry", "25", "8/30/1997");
   const food = document.getElementById("type-of-food").value;
-  getCarbs(food, user);
+  getCarbs(food);
   document.getElementById("type-of-food").innerText = null;
 }
 
@@ -78,8 +57,15 @@ function handleMealSubmission() {
   event.preventDefault();
   const mealCarbs = document.getElementById("meal-carbs").value;
   addMealCarbs(mealCarbs);
-  prin
-  // print
+  printElements();
+}
+
+function handleCarbGoalSubmission() {
+  let user = JSON.parse(sessionStorage.getItem('person'));
+  let goal = document.getElementById('carb-goal').value;
+  user.carbsGoal = goal;
+  sessionStorage.setItem('person', JSON.stringify(user));
+  document.getElementById('carb-inputs').removeAttribute("class");
 }
 
 function handleGlucoseSubmission() {
@@ -347,5 +333,6 @@ window.addEventListener('load', function () {
   document.querySelector('form#glucose-form').addEventListener('submit', handleGlucoseSubmission);  
   document.getElementById("food-carbs").addEventListener("submit", handleCarbSubmission);
   document.getElementById("meal-carbs-button").addEventListener("click", handleMealSubmission);
+  document.getElementById("carb-goal-button").addEventListener("click", handleCarbGoalSubmission);
 
 });

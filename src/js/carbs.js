@@ -18,8 +18,9 @@ export function conversion (quantity, measurement) {
 export function addCarbs (gramsWeight, carbs) {
   const totalCarbs = gramsWeight * carbs;
   let user = JSON.parse(sessionStorage.getItem('person'));
-  let carbCount =  user.dailyCarbs + totalCarbs; 
-  user.dailyCarbs = carbCount;
+  let carbCount =  parseFloat(user.dailyCarbs) + totalCarbs; 
+  user.dailyCarbs = carbCount.toFixed(2);
+  // console.log(user.dailyCarbs);
   //To access person, do JSON.parse(sessionStorage.getItem(person))
 
   sessionStorage.setItem('person', JSON.stringify(user));
@@ -30,14 +31,11 @@ export function addCarbs (gramsWeight, carbs) {
 
 export function addMealCarbs (mealCarbs) {
   let user = JSON.parse(sessionStorage.getItem('person'));
-  let carbCount =  user.dailyCarbs + mealCarbs; 
-  user.dailyCarbs = carbCount;
+  let carbCount =  parseFloat(user.dailyCarbs) + parseInt(mealCarbs); 
+  console.log(mealCarbs)
+  user.dailyCarbs = carbCount.toFixed(2);
   sessionStorage.setItem('person', JSON.stringify(user));
 }
 
+// let carbCount = parseFloat(sessionStorage.getItem('totalCarbs')) + totalCarbs; 
 
-/// 8 T = 100 g        (input/8) * 100 = grams
-// 24 t = 100 g       (input/24) * 100 = grams
-// 4 ounces = 100 g   (input/4) * 100 = grams
-// .25 lbs = 100 g    (input/.25) * 100 = grams
-// .5 c = 100 g       (input/.5) * 100 = grams
