@@ -6,7 +6,7 @@ import { Activity } from './js/activity.js';
 import CarbService from './js/carb-services.js';
 import {conversion, addCarbs} from './js/carbs.js';
 import User from './js/user.js';
-import {updateGlucoseGoal, addGlucoseLevel, addInsulinLevel, calculateA1C} from './js/blood-glucose.js';
+import {updateGlucoseGoal, addGlucoseLevel, addInsulinLevel, calculateA1C, bloodGlucoseChecker} from './js/blood-glucose.js';
 
 async function getCarbs(food, user) {
   const promise = await CarbService.getCarbs(food);
@@ -61,9 +61,9 @@ function handleGlucoseSubmission() {
   // Run functions to add data to user object
   addGlucoseLevel(glucLvl, glucLvlTime);
   calculateA1C();
+  bloodGlucoseChecker();
   // Print results
   printGlucoseData();
-  printA1CData();
   // Reset form
   resetInputElement(document.getElementById('glucose-level'));
 }
@@ -125,6 +125,27 @@ function printGlucoseData() {
     glucTimeArray[i] = toTimeStamp(user.glucoseTimes[i]);
   }
   const table = dataToTable('Glucose Levels', user.glucoseLevels, 'Time Logged', glucTimeArray);
+  // Display alert based on logic (if red, else if yellow, else green)
+  if (user.glucStatus){
+    let alertContainer = document.createElement('div');
+    alertContainer.setAttribute('role', 'alert');
+    if (user.glucStatus === 'redAlert') {
+      alertContainer.setAttribute('class', 'alert alert-danger');
+      alertContainer.append('Alert! Current blood glucose level outside target range.');
+    } else if (user.glucStatus === 'yellowWarning') {
+      alertContainer.setAttribute('class', 'alert alert-warning');
+      alertContainer.append('Warning! Current blood glucose level close to target limits.');
+    } else if (user.glucStatus === 'greenSuccess') {
+      alertContainer.setAttribute('class', 'alert alert-success');
+      alertContainer.append('Success! Current blood glucose level within target range.');
+    } 
+    document.querySelector('div#glucDiv').prepend(alertContainer);
+  }
+  // Display A1C 
+  let a1C = `A1C ${user.a1C}`;
+  let h3 = document.createElement("h3");
+  h3.append(a1C)
+  document.querySelector('div#glucDiv').append(h3);
   document.querySelector('div#glucDiv').append(table);
 }
 
@@ -144,18 +165,6 @@ function printInsulinData() {
   }
   const table = dataToTable('Insulin Level', user.insulinLevels, 'Time Logged', insTimeArray);
   document.querySelector('div#insDiv').append(table);
-}
-
-function printA1CData() {
-  let user = JSON.parse(sessionStorage.getItem('person'));
-  if (!document.querySelector('div#a1c')) {
-    let a1c = document.createElement('div');
-    a1c.setAttribute('id', 'a1c');
-    document.querySelector('div.container').append(a1c);
-  } else {
-    document.querySelector('div#a1c').replaceChildren('');
-  }
-  document.querySelector('div#a1c').innerText = user.a1C;
 }
 
 //Utility Function

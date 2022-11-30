@@ -43,7 +43,27 @@ export function calculateA1C() {
   sessionStorage.setItem('person', JSON.stringify(user));
 }
 
-// bloodGlucoseChecke -> Using latest gluc input
+// bloodGlucoseChecker -> Using latest gluc input
+export function bloodGlucoseChecker() {
+  // "Check out" user obj
+  let user = JSON.parse(sessionStorage.getItem('person'));
+  const bottom = parseInt(user.glucoseRangeLow);
+  const top = parseInt(user.glucoseRangeHigh);
+  const glucLevelArray = user.glucoseLevels;
+  const glucLatestLevel = parseInt(glucLevelArray[glucLevelArray.length - 1]);
+  console.log('latest level' + glucLatestLevel);
   // If gluc level above OR below range, return red alert
-  // Else if gluc level within 10% of top or bottom of range, return yellow warning
-  // Else, return green success
+  if (glucLatestLevel > top || glucLatestLevel < bottom) {
+    user.glucStatus = 'redAlert';
+  } else if (glucLatestLevel >= (top - 10)|| glucLatestLevel <= (bottom + 10)) {
+    // Else if gluc level within 10 units of top or bottom of range, return yellow warning
+    user.glucStatus = 'yellowWarning';
+  } else {
+    // Else, return green success
+    user.glucStatus = 'greenSuccess';
+  }
+  // Store in user object session storage
+  sessionStorage.setItem('person', JSON.stringify(user));
+  // Return glucStatus
+  return user.glucStatus;
+}
