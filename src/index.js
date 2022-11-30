@@ -63,6 +63,7 @@ function handleGlucoseSubmission() {
   // Reset form
   resetInputElement(document.getElementById('glucose-level'));
   resetInputElement(document.getElementById('glucose-time'));
+  printA1CData();
 }
 
 function handleInsulinSubmission() {
@@ -132,6 +133,18 @@ function printInsulinData() {
   }
   const table = dataToTable('Insulin Level', user.insulinLevels, 'Time Logged', user.insulinTimes);
   document.querySelector('div#insDiv').append(table);
+}
+
+function printA1CData() {
+  let user = JSON.parse(sessionStorage.getItem('person'));
+  if (!document.querySelector('div#a1c')) {
+    let a1c = document.createElement('div');
+    a1c.setAttribute('id', 'a1c');
+    document.querySelector('div.container').append(a1c);
+  } else {
+    document.querySelector('div#a1c').replaceChildren('');
+  }
+  document.querySelector('div#a1c').innerText = user.a1C;
 }
 
 //Utility Function
