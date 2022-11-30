@@ -171,7 +171,7 @@ function printInsulinData() {
 function toTimeStamp(dateValue) { 
   // Convert date to hours:minutes
   let date = new Date(dateValue);
-  let timeStamp = `${date.getHours()}:${date.getMinutes()}`;
+  let timeStamp = `${date.getHours()}:${date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()}`;
   return timeStamp;
 }
 
