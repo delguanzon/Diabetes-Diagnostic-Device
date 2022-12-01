@@ -114,7 +114,7 @@ function handleCarbGoalSubmission() {
   let goal = document.getElementById('carb-goal').value;
   user.carbsGoal = goal;
   sessionStorage.setItem('person', JSON.stringify(user));
-  document.getElementById('carb-inputs').removeAttribute("class");
+  //document.getElementById('carb-inputs').removeAttribute("class");
 }
   
 // function handleGlucoseGoalSubmission() {
@@ -192,7 +192,8 @@ function printGlucoseData() {
   if (!document.querySelector('div#glucDiv')) {
     let glucDiv = document.createElement('div');
     glucDiv.setAttribute('id', 'glucDiv');
-    document.querySelector('div#glucose-summary').append(glucDiv);
+    //document.querySelector('div#glucose-summary').append(glucDiv);
+    document.querySelector('div#glucose-div').append(glucDiv);
   } else {
     document.querySelector('div#glucDiv').replaceChildren("");
   }
@@ -465,7 +466,15 @@ function displayRecentActivity() {
 
 // logs activity data, adds activity data as a daily entry
 function logActivity() {
-  //document.querySelector(".floating-div").removeAttribute("hidden");
+  
+  if(sessionStorage.progressHide == 0) {
+    document.querySelector("#progress-report").removeAttribute("hidden");
+    sessionStorage.progressHide = 1;
+  } else {
+    document.querySelector("#progress-report").setAttribute("hidden","");
+    sessionStorage.progressHide = 0;
+  }
+  
   const person = JSON.parse(sessionStorage.getItem("person"));
   let displayUl = document.createElement("ul");
   displayUl.setAttribute("id", "display-day-ul");
@@ -646,11 +655,12 @@ function handleLandingForm(e) {
 
 function displayUserInfo() {
   let person = JSON.parse(sessionStorage.person);
-  document.getElementById("user-info").append(`$Hi ${person.name}! Your glucose maintenance levels should be ${person.glucoseRangeLow}-${person.glucoseRangeHigh} mg/dL`);
+  document.getElementById("user-info").append(`Hi ${person.name}! Your glucose maintenance levels should be ${person.glucoseRangeLow}-${person.glucoseRangeHigh} mg/dL`);
 }
 
 window.addEventListener('load', function () {
   
+  sessionStorage.progressHide = 0;
   document.getElementById("new-activity-btn").addEventListener("click", handleNewActivity);
   document.getElementById("activity-form").addEventListener("submit", handleActivityFormSubmission);
   document.getElementById("end-activity-form").addEventListener("submit", handleEndActivityForm); 

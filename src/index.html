@@ -52,7 +52,8 @@
       </div>
     </div>
   </div>
-  <div class="container" id="main-div" hidden>
+  <div class="container-fluid" id="main-div" >
+
     <!-- Main  -->
     <h1>Daily Diabetes Diagnostic Device</h1>
     <!-- Goal Inputs -->
@@ -67,9 +68,9 @@
       <!-- Activity Goal -->
     </div>
     <!-- Log Inputs -->
-    <div id="logs">
+    <div id="logs" class="row">
       <!-- Glucose Inputs -->
-      <div id="glucose-div">
+      <div id="glucose-div" class="col">
         <h2>Glucose Tracker</h2>
         <form id="glucose-level-form">
           <div class="mb-3">
@@ -82,21 +83,22 @@
           <div class="mb-3">
             <label for="insulin-level">Insulin Level</label>
             <input type="number" id="insulin-level" required>
-            <button type="submit" class="btn btn-primary" >Log Insulin Level</button>
+            <button type="submit" class="btn btn-primary">Log Insulin Level</button>
           </div>
         </form>
       </div>
       <!-- Carb Inputs -->
-      <div id="carb-stuff">
-        <div class="hidden-carb-form" id="carb-inputs">
+      <div id="carb-stuff" class="col">
+        <!-- <div class="hidden-carb-form" id="carb-inputs"> -->
+        <div id="carb-inputs">
           <h2>Carb Tracker</h2>
           <form id="food-carbs">
             <!-- <label for="carb-goal">Daily Carb Goal (g)</label> -->
             <br>
-            <input type="text" id="type-of-food" placeholder="Enter Ingredient"><br>
-            <!-- <label for="type-of-food">Enter ingredient</label><br> -->
-            <input type="number" id="quantity-of-food" step=0.01 min=0 placeholder="Enter Quantity">
-            <!-- <label for="quantity-of-food">Enter quantity</label> -->
+            <label for="type-of-food">Ingredient</label>
+            <input type="text" id="type-of-food" placeholder="ex:chicken,eggs, etc."><br>
+            <label for="quantity-of-food">Enter quantity</label>
+            <input type="number" id="quantity-of-food" step=0.01 min=0 placeholder="Qty">            
             <select name="measure-option" id="measurement">
               <option value="">--Choose measurement--</option>
               <option value="grams">grams</option>
@@ -107,7 +109,7 @@
               <option value="teaspoons">teaspoons</option>
             </select>
             </label><br>
-            <button type="submit" class="btn btn-primary" >Add Carbs</button>
+            <button type="submit" class="btn btn-primary">Add Carbs</button>
           </form>
           <br>
           <input type="text" id="meal-name" placeholder="Enter Meal (ex.Lasagna)">
@@ -120,10 +122,10 @@
             <div id="carbBar"></div>
           </div>
         </div>
-        
+
       </div>
       <!-- Activity Inputs -->
-      <div id="activity">
+      <div id="activity" class="col">
         <h2>Activity</h2>
         <div class="mb-1" id="floatdiv">
           <span class="mb-1">Daily Goal: 3000 steps</span>
@@ -141,7 +143,7 @@
           <strong>Most Recent Activity:</strong><span id="recent-activity"></span>
         </div>
         <button id="new-activity-btn" class="btn btn-primary">New Activity</button>
-  
+
         <div id="new-activity" hidden>
           <form id="activity-form">
             <label for="beforeBs">Starting Blood Sugar</label>
@@ -164,14 +166,15 @@
           </form>
           <div id="timer" hidden>
             <h4 id="dispTimer">00:00</h4>
-            <button id="start" class="btn btn-primary">Start</button> <button id="pause" class="btn btn-primary">Pause</button><button id="end" class="btn btn-primary">End</button>
+            <button id="start" class="btn btn-primary">Start</button> <button id="pause"
+              class="btn btn-primary">Pause</button><button id="end" class="btn btn-primary">End</button>
           </div>
           <form id="end-activity-form" hidden>
             <label for="afterBs">Current Blood Sugar</label>
             <input type="number" id="afterBs">
             <label for="steps">Steps</label>
             <input type="number" id="steps">
-            <button type="submit" class="btn btn-primary" >End Activity</button>
+            <button type="submit" class="btn btn-primary">End Activity</button>
           </form>
         </div>
       </div>
@@ -197,7 +200,7 @@
     </div>
     <!-- Progress Report -->
     <button type="click" id="report-btn" class="btn btn-primary">See Progress Report For The Week</button>
-    <div id="progress-report">
+    <div id="progress-report" hidden>
       <div id="report-temp" class="bg-dark text-white">
         <h2>Progress Reports:</h2>
         <div id="activity-log">
