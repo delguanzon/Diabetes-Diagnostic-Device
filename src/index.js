@@ -641,14 +641,16 @@ function handleLandingForm(e) {
   updateGlucoseGoal(low, high);
   document.getElementById("main-div").removeAttribute("hidden");
   document.getElementById("landing-div").setAttribute("hidden","");
+  displayUserInfo();
 }
 
 function displayUserInfo() {
   let person = JSON.parse(sessionStorage.person);
   document.getElementById("user-info").append(`$Hi ${person.name}! Your glucose maintenance levels should be ${person.glucoseRangeLow}-${person.glucoseRangeHigh} mg/dL`);
 }
+
 window.addEventListener('load', function () {
-  displayUserInfo();
+  
   document.getElementById("new-activity-btn").addEventListener("click", handleNewActivity);
   document.getElementById("activity-form").addEventListener("submit", handleActivityFormSubmission);
   document.getElementById("end-activity-form").addEventListener("submit", handleEndActivityForm); 
@@ -658,7 +660,7 @@ window.addEventListener('load', function () {
   // document.querySelector('form#glucose-goal-form').addEventListener('submit', handleGlucoseGoalSubmission);
   document.querySelector('form#glucose-level-form').addEventListener('submit', handleGlucoseSubmission);
   document.querySelector('form#insulin-level-form').addEventListener('submit', handleInsulinSubmission);  
-  document.getElementById("landingSubmit").addEventListener("click", handleLandingForm);
+  document.getElementById("landFrm").addEventListener("submit", handleLandingForm);
   document.getElementById("food-carbs").addEventListener("submit", handleCarbSubmission);
   document.getElementById("meal-carbs-button").addEventListener("click", handleMealSubmission);
   document.getElementById("carb-goal-button").addEventListener("click", handleCarbGoalSubmission);  
