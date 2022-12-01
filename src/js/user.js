@@ -1,11 +1,11 @@
 export default class User {
 
-  constructor(name, age, dob) {
+  constructor(name, age, dob, low, high) {
     this.name = name;
     this.age = age;
     this.dob = dob;
     this.activities = [];
-    this.glucoseLevels = [];
+    this.glucoseLevels = [low, high];
     this.glucoseTimes = [];
     this.insulinLevels = [];
     this.insulinTimes = [];
@@ -16,7 +16,7 @@ export default class User {
     this.foodTimes = [];
   }
 
-  setBloodSugar(bs){
+  setBloodSugar(bs) {
     this.bs = bs;
   }
 

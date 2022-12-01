@@ -9,27 +9,73 @@
 </head>
 
 <body>
-  <div class="container">
-    <h1>Daily Diabetes Diagnostic Device</h1>
-    <form id="glucose-form">
-      <div class="mb-3">
-        <input type="number" id="glucose-goal">
-        <label for="glucose-goal">Glucose Goal</label>
+  <div class="container-fluid " id="landing-div">
+    <div class="row" style="height: 100%; background-color: white;">
+      <div class="jumbotron col">
+        <h1 class="display-4">Diabetes Diagnostic Device</h1>
+        <p class="lead">This is a brief info about the app. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+          do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          .</p>
+        <hr class="my-4">
+        <p>Submit your personal info and the blood glucose maintenance levels in the form to start using the app.</p>
       </div>
-      <div class="mb-3">
-        <input type="number" id="glucose-level">
-        <input type="time" id="glucose-time" name="glucose-time" required>
-        <label for="glucose-level">Glucose Level & Time Logged</label>
+      <div class="col">
+        <form>
+          <label for="fnField">Full Name</label>
+          <input id="fnField" class="form-control" type="text">
+          <div class="form-row form-group">
+            <div class="form-group col-md-6">
+              <label for="dobField">Birthdate</label>
+              <input id="dobField" class="form-control" type="date">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="ageField">Age</label>
+              <input id="ageField" class="form-control" type="number">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="lowField">Low</label>
+              <input id="lowField" class="form-control" type="text">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="highField">High</label>
+              <input id="highField" class="form-control" type="text">
+            </div>
+          </div>
+          <div class="d-flex justify-content-center">
+            <button id="landingSubmit" class="btn btn-primary">start</button>
+          </div>
+        </form>
       </div>
-      <div class="mb-3">
-        <input type="number" id="insulin-level">
-        <input type="time" id="insulin-time" name="insulin-time" required>
-        <label for="insulin-level">Insulin Level & Time Logged</label>
-      </div>
-      <div class="mb-3">
-      <button type="submit">Add Blood Glucose Numbers</button>
     </div>
-    </form><br>
+  </div>
+  <div class="container" id="main-div" hidden>
+    <h1>Daily Diabetes Diagnostic Device</h1>
+    <form id="glucose-goal-form">
+      <div class="mb-3">
+        <label for="glucose-goal">Glucose Goal</label>
+        <input type="number" id="glucose-range-low" placeholder="Low" required>
+        <input type="number" id="glucose-range-high" placeholder="High" required>
+        <button type="submit">Add Target Glucose Range</button>
+      </div>
+    </form>
+    <form id="glucose-level-form">
+      <div class="mb-3">
+        <label for="glucose-level">Glucose Level</label>
+        <input type="number" id="glucose-level" required>
+        <button type="submit">Log Blood Glucose Level</button>
+      </div>
+    </form>
+    <form id="insulin-level-form">
+      <div class="mb-3">
+        <label for="insulin-level">Insulin Level</label>
+        <input type="number" id="insulin-level" required>
+        <button type="submit">Log Insulin Level</button>
+      </div>
+    </form>
+ </div>
 
 
   <div id="carb-stuff">
@@ -107,8 +153,91 @@
     </div>
   </div>
 
-  <div id="temp-activity-div">
+    <div id="activity">
+      <h2>Activity</h2>
+      <div class="mb-1" id="floatdiv">
+        <span class="mb-1">Daily Goal: 3000 steps</span>
+        <div class="progress mb-1">
+          <div class="progress-bar" id="steps-progress" role="progressbar" style="width: 0;" aria-valuenow=""
+            aria-valuemin="0" aria-valuemax="3000">0 out of 3000</div>
+        </div>
+        <span class="mb-1">Daily Goal: 20 minutes Workout</span>
+        <div class="progress mb-1">
+          <div class="progress-bar" id="workout-progress" role="progressbar" style="width: 0;" aria-valuenow=""
+            aria-valuemin="0" aria-valuemax="1200">0%</div>
+        </div>
+      </div>
+      <div>
+        <strong>Most Recent Activity:</strong><span id="recent-activity"></span>
+      </div>
+      <button id="new-activity-btn">New Activity</button>
+      <button type="click" id="report-btn">See All Activity for the The Week</button>
 
+      <div id="new-activity" hidden>
+        <form id="activity-form">
+          <label for="beforeBs">Starting Blood Sugar</label>
+          <input type="number" id="beforeBs">
+          <span id="warning-tag-low" class="badge badge-warning" hidden>low blood sugar</span>
+          <span id="warning-tag-high" class="badge badge-danger" hidden>high blood sugar</span>
+          <blockquote class="blockquote" hidden id="warning-msg-low">
+            <p class="mb-0">Warning: "If your blood sugar level is less than 100 mg/dl before you start your activity,
+              try
+              having a small carbohydrate snack (about 15 grams) to increase your blood sugar and reduce your risk for
+              hypoglycemia."</p>
+            <footer class="blockquote-footer"><cite title="Source Title">American Diabetes Association</cite></footer>
+          </blockquote>
+          <blockquote class="blockquote" hidden id="warning-msg-high">
+            <p class="mb-0">Warning: "If your blood sugar is high before starting exercise, check your blood or
+              urine for ketones. If you test positive for ketones, avoid vigorous activity."</p>
+            <footer class="blockquote-footer"><cite title="Source Title">American Diabetes Association</cite></footer>
+          </blockquote>
+          <button type="submit" class="btn btn-primary">Enter</button>
+        </form>
+        <div id="timer" hidden>
+          <h4 id="dispTimer">00:00</h4>
+          <button id="start">Start</button> <button id="pause">Pause</button><button id="end">End</button>
+        </div>
+        <form id="end-activity-form" hidden>
+          <label for="afterBs">Current Blood Sugar</label>
+          <input type="number" id="afterBs">
+          <label for="steps">Steps</label>
+          <input type="number" id="steps">
+          <button type="submit">End Activity</button>
+        </form>
+      </div>
+    </div>
+    <div id="report-temp" class="bg-dark text-white">
+      <h2>Progress Reports:</h2>
+      <div id="activity-log">
+      </div>
+      <h5>Monday</h5>
+      <div id="monday-report">
+      </div>
+      <br>
+      <h5>Tuesday</h5>
+      <div id="tuesday-report">
+      </div>
+      <br>
+      <h5>Wednesday</h5>
+      <div id="wednesday-report">
+      </div>
+      <br>
+      <h5>Thursday</h5>
+      <div id="thursday-report">
+      </div>
+      <br>
+      <h5>Friday</h5>
+      <div id="friday-report">
+      </div>
+      <br>
+      <h5>Saturday</h5>
+      <div id="saturday-report">
+      </div>
+      <br>
+      <h5>Sunday</h5>
+      <div id="sunday-report">
+      </div>
+    </div>
   </div>
   <br>
   <div id="carb-data-display" class="textbox" contenteditable="true">
