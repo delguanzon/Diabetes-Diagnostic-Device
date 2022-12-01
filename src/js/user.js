@@ -1,11 +1,11 @@
 export default class User {
 
-  constructor(name, age, dob, low, high) {
+  constructor(name, age, dob) {
     this.name = name;
     this.age = age;
     this.dob = dob;
     this.activities = [];
-    this.glucoseLevels = [low, high];
+    this.glucoseLevels = [];
     this.glucoseTimes = [];
     this.insulinLevels = [];
     this.insulinTimes = [];

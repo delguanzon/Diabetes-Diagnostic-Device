@@ -63,6 +63,10 @@ function printElements(user) {
     carbProgress.style.backgroundColor = 'red';
     carbProgress.style.color = 'white';
   }
+  // Add title for summary
+  let summaryTitle = `Meals Summary`;
+  let h3 = document.createElement("h3");
+  h3.append(summaryTitle);
   let ulElement = document.createElement("ul");
   for (let i = 0; i < user.food.length; i++) {
     let currentDate = new Date(user.foodTimes[i]);
@@ -71,12 +75,13 @@ function printElements(user) {
     let month = currentDate.getMonth() + 1;
     let day = currentDate.getDate();
     let year = currentDate.getFullYear().toString().split('');
-    let printLog = `${user.food[i]} ${'\xa0'.repeat(3)} ${user.foodCarbs[i]}g ${'\xa0'.repeat(3)} ${currentHours}:${currentMinutes} ${'\xa0'.repeat(3)} ${month}/${day}/${year[2]}${year[3]}`;
+    let printLog = `${user.food[i]} ${'\xa0'.repeat(3)} ${user.foodCarbs[i]}g ${'\xa0'.repeat(3)} ${currentHours}:${currentMinutes} ${'\xa0'.repeat(3)} ${month}-${day}-${year[2]}${year[3]}`;
     let liElement = document.createElement('li')
     liElement.append(printLog);
     ulElement.append(liElement);
   }
   document.getElementById("carb-data-display").replaceChildren(ulElement);
+  document.getElementById("carb-data-display").prepend(h3);
 }
 
 function printError() {
@@ -110,20 +115,20 @@ function handleCarbGoalSubmission() {
   user.carbsGoal = goal;
   sessionStorage.setItem('person', JSON.stringify(user));
   document.getElementById('carb-inputs').removeAttribute("class");
- }
-  
-function handleGlucoseGoalSubmission() {
-  event.preventDefault();
-  // Retrieve inputs
-  const glucRangeLow = document.getElementById('glucose-range-low').value;
-  const glucRangeHigh = document.getElementById('glucose-range-high').value;
-  // Run function to add data to user object
-  updateGlucoseGoal(glucRangeLow, glucRangeHigh);
-  // TODO: Add display function
-  // Reset form
-  resetInputElement(document.getElementById('glucose-range-low'));
-  resetInputElement(document.getElementById('glucose-range-high'));
 }
+  
+// function handleGlucoseGoalSubmission() {
+//   event.preventDefault();
+//   // Retrieve inputs
+//   const glucRangeLow = document.getElementById('glucose-range-low').value;
+//   const glucRangeHigh = document.getElementById('glucose-range-high').value;
+//   // Run function to add data to user object
+//   updateGlucoseGoal(glucRangeLow, glucRangeHigh);
+//   // TODO: Add display function
+//   // Reset form
+//   resetInputElement(document.getElementById('glucose-range-low'));
+//   resetInputElement(document.getElementById('glucose-range-high'));
+// }
 
 function handleGlucoseSubmission() {
   event.preventDefault();
@@ -187,7 +192,7 @@ function printGlucoseData() {
   if (!document.querySelector('div#glucDiv')) {
     let glucDiv = document.createElement('div');
     glucDiv.setAttribute('id', 'glucDiv');
-    document.querySelector('div.container').append(glucDiv);
+    document.querySelector('div#glucose-summary').append(glucDiv);
   } else {
     document.querySelector('div#glucDiv').replaceChildren("");
   }
@@ -213,7 +218,7 @@ function printGlucoseData() {
       alertContainer.setAttribute('class', 'alert alert-success');
       alertContainer.append('Success! Current blood glucose level within target range.');
     } 
-    document.querySelector('div#glucDiv').prepend(alertContainer);
+    document.querySelector('div#glucDiv').append(alertContainer);
   }
   // Display Glucose Summary Header & A1C 
   let summaryTitle = `Glucose Levels`;
@@ -231,7 +236,7 @@ function printInsulinData() {
   if (!document.querySelector('div#insDiv')) {
     let insDiv = document.createElement('div');
     insDiv.setAttribute('id', 'insDiv');
-    document.querySelector('div.container').append(insDiv);
+    document.querySelector('div#insulin-summary').append(insDiv);
   } else {
     document.querySelector('div#insDiv').replaceChildren('');
   }
@@ -290,7 +295,7 @@ function updateProgressBar(steps, time) {
   h4.append("Progress Report:");
   
   if (time < (wGoal)) {
-    floatdiv.append(`Heads Up! Your total workout time ${time} was short of your daily goal of 20 mins`);
+    floatdiv.append(`Heads Up! Your total workout time ${time} secs was short of your daily goal of 20 mins`);
   } else if (time >= (wGoal)) {
     floatdiv.append(`Your total workout time today has met or exceeded your daily goal of ${wGoal}! Keep up the good work!`);
   }
@@ -355,7 +360,7 @@ function handleStartTimer() {
   let intId = parseInt(sessionStorage.intId);
   let person = JSON.parse(sessionStorage.person);
   person.glucoseLevels.push(bloodSugar);
-  person.glucoseTimes.push(Date.now());
+  person.glucoseTimes.push(toTimeStamp(Date.now()));
   sessionStorage.setItem("person", JSON.stringify(person));
 
   if (intId != null) {
@@ -420,14 +425,12 @@ function handleEndActivityForm(e) {
 
   activity.steps = document.getElementById("steps").value;
   activity.currentBs = document.getElementById("afterBs").value;
-
-  activity.timeEnd = Date.now();
   console.log(activity);
 
   let person = JSON.parse(sessionStorage.person);
   person.activities.push(activity);
   person.glucoseLevels.push(activity.currentBs);
-  person.glucoseTimes.push(Date.now());
+  person.glucoseTimes.push(toTimeStamp(Date.now()));
   sessionStorage.setItem("person", JSON.stringify(person));
 
   displayRecentActivity();
@@ -499,7 +502,7 @@ function logActivity() {
     let date = new Date(activity.timeStart);
     
     // Display time header for each log
-    displayUl.append(`@ ${date.toTimeString()}`);
+    displayUl.append(`Workout @ ${date.toTimeString()}`);
     for (const [key, value] of Object.entries(activity)) {
       let li = document.createElement("li");
 
@@ -525,16 +528,54 @@ function logActivity() {
       li.append(`${key}: ${value}`);
       displayUl.append(li);
     }
-
-    //append UL to dayID i.e. Monday
-    document.getElementById(`${dayID}`).replaceChildren(displayUl);
   }
+
+  // LEAVE OUT let ulElement = document.createElement("ul");
+
+  for (let i = 0; i < person.food.length; i++) {
+    let currentDate = new Date(person.foodTimes[i]);
+    let currentHours = currentDate.getHours(); 
+    let currentMinutes = String(currentDate.getMinutes()).padStart(2, "0");
+    let month = currentDate.getMonth() + 1;
+    let day = currentDate.getDate();
+    let year = currentDate.getFullYear().toString().split('');
+    let printLog = `${person.food[i]} ${'\xa0'.repeat(3)} ${person.foodCarbs[i]}g ${'\xa0'.repeat(3)} ${currentHours}:${currentMinutes} ${'\xa0'.repeat(3)} ${month}-${day}-${year[2]}${year[3]}`;
+    let liElement = document.createElement('li')
+    liElement.append(printLog);
+    displayUl.append(liElement);
+  }
+
+  // Convert user.glucoseTimes array to array of printable timeStamps
+  let glucTimeArray = person.glucoseTimes;
+  let glucLevelsArray = person.glucoseLevels;
+  for (let i = 0; i < person.glucoseTimes.length; i++) {
+    let glucLi = document.createElement("li");
+    glucTimeArray[i] = toTimeStamp(person.glucoseTimes[i]);
+    glucLevelsArray[i] = glucLevelsArray[i] + ' mg/dL';
+    glucLi.append(`$Glucose Level: ${glucLevelsArray[i]} @ ${glucTimeArray[i]}`);
+    displayUl.append(glucLi);
+  }
+
+  // Convert user.glucoseTimes array to array of printable timeStamps
+  let insulinTimeArray = person.insulinTimes;
+  let insulinLevelsArray = person.insulinLevels;
+  for (let i = 0; i < insulinTimeArray.length; i++) {
+    let insLi = document.createElement("li");
+    insLi.append(`$Insulin Level: ${insulinLevelsArray[i]} @ ${insulinTimeArray[i]}`);
+    displayUl.append(insLi);
+  }
+
+  //append UL to dayID i.e. Monday
+  document.getElementById(`${dayID}`).replaceChildren(displayUl);
+  
+
+
 
   //get goals and report total met
   let goalsMet = 0;
 
   //update as we add goals
-  const goalsSet = 1;
+  const goalsSet = 4;
 
   //append progress report details
   let progressTitle = document.createElement("h5");
@@ -553,6 +594,30 @@ function logActivity() {
   let timeP = document.createElement("p");
   timeP.append(`Workout Time Goal: ${document.getElementById("workout-progress").innerText} of the way to 20 minutes`);
   displayUl.append(timeP);
+  if (parseInt(document.getElementById("workout-progress").innerText.replace("%", "")) >= 100) {
+    goalsMet += 1;
+  }
+
+  //get carb goal
+  let carbsP = document.createElement("p");
+  carbsP.append(`Carbs Goal: ${person.dailyCarbs} out of ${person.carbsGoal}`);
+  displayUl.append(carbsP);
+  if (person.dailyCarbs >= parseInt(person.carbsGoal)) {
+    goalsMet += 1;
+  }
+
+  //get glucose avg level between low and high
+  let glucoseP = document.createElement("p");
+  let total = 0;
+  for (const num of person.glucoseLevels) {
+    total += parseInt(num);
+  }
+  let avgTotal = total / person.glucoseLevels.length;
+  glucoseP.append(`Average Glucose Level: ${avgTotal}`);
+  displayUl.append(glucoseP);
+  if (parseInt(person.glucoseRangeLow) < avgTotal < parseInt(person.glucoseRangeHigh)) {
+    goalsMet += 1;
+  }
 
   // goal set and met meter
   let goalsP = document.createElement("p");
@@ -568,24 +633,29 @@ function handleLandingForm(e) {
   let low = document.getElementById("lowField").value;
   let high = document.getElementById("highField").value;
 
-  const person = new User(name, age, dob, low, high);
+  const person = new User(name, age, dob);
+  
   sessionStorage.intId = null;
   //To access person, do JSON.parse(sessionStorage.getItem(person))
   sessionStorage.setItem("person", JSON.stringify(person));
-
+  updateGlucoseGoal(low, high);
   document.getElementById("main-div").removeAttribute("hidden");
   document.getElementById("landing-div").setAttribute("hidden","");
 }
 
+function displayUserInfo() {
+  let person = JSON.parse(sessionStorage.person);
+  document.getElementById("user-info").append(`$Hi ${person.name}! Your glucose maintenance levels should be ${person.glucoseRangeLow}-${person.glucoseRangeHigh} mg/dL`);
+}
 window.addEventListener('load', function () {
-
+  displayUserInfo();
   document.getElementById("new-activity-btn").addEventListener("click", handleNewActivity);
   document.getElementById("activity-form").addEventListener("submit", handleActivityFormSubmission);
   document.getElementById("end-activity-form").addEventListener("submit", handleEndActivityForm); 
   document.getElementById("start").addEventListener("click", handleStartTimer);
   document.getElementById("end").addEventListener("click", handleEndTimer);
   document.getElementById("pause").addEventListener("click", handlePauseTimer);
-  document.querySelector('form#glucose-goal-form').addEventListener('submit', handleGlucoseGoalSubmission);
+  // document.querySelector('form#glucose-goal-form').addEventListener('submit', handleGlucoseGoalSubmission);
   document.querySelector('form#glucose-level-form').addEventListener('submit', handleGlucoseSubmission);
   document.querySelector('form#insulin-level-form').addEventListener('submit', handleInsulinSubmission);  
   document.getElementById("landingSubmit").addEventListener("click", handleLandingForm);

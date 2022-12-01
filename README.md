@@ -27,25 +27,25 @@ A Health Management System for person with Diabetes that tracks information rela
 
 * Create a user profile to store user data locally
   * Features:
+      ##### Blood Glucose Monitor
+        * Retrieves, stores & displays user-inputted glucose level log entries
+        * Retrieves, stores & displays user-inputted insulin level log entries
+        * Retrieves & stores user-inputted glucose target range
+        * Displays status alerts (red/yellow/green) based on latest glucose reading (outside range / near limit / within range)
+        * Calculates & displays A1C based on average of all user-inputted glucose values
+          __A1C% = (Estimated average glucose(mg/dL) + 46.7) / 28.7__ 
 
-      * Blood Glucose Monitor
-        * User set goal for glucose level
-        * Blood Glucose - User inputted number, five times / day or avg
-          * store number & time of day inputted
-          * (morning, breakfast, lunch, dinner, bedtime)
-        * Insulin Units/day - User inputted number based on what you eat / what your levels are
-        * A1C% = (Estimated average glucose(mg/dL) + 46.7) / 28.7 
-
-      * Carb Tracker 
+      ##### Carb Tracker 
         * User set limit, displays message if surpassed
         * Carbs/day 
           * Basic user input
-          * User selects foods from recipes API list they've had that day, assembles meals / multiple meals / API gets nutritional info & stores total carb levels
-        * Search diabetes-friendly recipes
+          * User inputs foods they've had that day, assembles meals / multiple meals / API gets nutritional info & stores total carb levels.
 
-      * Activity Tracker
-        * User sets goal for daily exercise minutes
-        * Activity - User inputs activity for the day
+      ##### Activity Tracker
+        * User inputs current blood sugar pre workout
+        * User times there workout with built in timer
+        * User inputs end blood sugar
+        * tracks with progress bar
         
   * Site Structure:
   
@@ -54,7 +54,7 @@ A Health Management System for person with Diabetes that tracks information rela
         * Blood Glucose (single or multiple entries)
         * Carb Tracker (search, select & save by whole ingredients)
         * Activity Tracker (single or multiple entries)
-      * User Snapshot Green / Yellow / Red Indicator 
+      * User Dashboard Green / Yellow / Red Indicator 
 
 #### Goals
 1. Meet project MVP requirements.
@@ -72,13 +72,12 @@ A Health Management System for person with Diabetes that tracks information rela
 * Navigate to the top level of the directory using bash or cmd
 * Run ``` $npm install ``` to install dependencies
 * Confirm all files in the src folder have 0 errors by running command ``` $ npm run lint ```
-* Confirm all business logic tests pass with Jest by running command ``` $ npm run test ```
 * For building and live preview, use ```npm run start```
 
 ### API Key Setup
 
 * Using your window explorer, Create a .env file in the top level of the directory .
-* Edit the file and type in ``` API_KEY=YOUR+API+KEY+HERE ```  , where you replace the value with your own API Key.
+* Edit the file and type in ``` API_KEY=YOUR+API+KEY+HERE ```  , where you replace the value with your own API Key from https://www.edamam.com/
 
 OR 
 
