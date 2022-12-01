@@ -31,39 +31,49 @@ function carbsCalc(data, food) {
   user.foodCarbs.push(parseFloat(ingredientCarbs));
   user.foodTimes.push(Date.now());
   sessionStorage.setItem('person', JSON.stringify(user));
-  console.log(user.dailyCarbs + "before");
   printElements(user);
 }
 
 function printElements(user) {
-  // let user = JSON.parse(sessionStorage.getItem('person'));
   let goal = user.carbsGoal;
-  const totalCarbs = user.dailyCarbs;
-  console.log(totalCarbs + "here");
-  if (parseFloat(user.dailyCarbs) >= goal) {
-    document.getElementById('carb-warning').innerText = 'You have reached your carb limit'
-  } else if (parseFloat(user.dailyCarbs) >= goal * .75) {
-    document.getElementById('carb-warning').innerText = 'You have reached 75% of your carb limit'
-  } else if (parseFloat(user.dailyCarbs) >= goal * .5) {
-    document.getElementById('carb-warning').innerText = 'You have reached 50% of your carb limit'
-  }
+  // if (parseFloat(user.dailyCarbs) >= goal) {
+  //   document.getElementById('carb-warning').innerText = 'You have reached your carb limit'
+  // } else if (parseFloat(user.dailyCarbs) >= goal * .75) {
+  //   document.getElementById('carb-warning').innerText = 'You have reached 75% of your carb limit'
+  // } else if (parseFloat(user.dailyCarbs) >= goal * .5) {
+  //   document.getElementById('carb-warning').innerText = 'You have reached 50% of your carb limit'
+  // }
   document.getElementById("daily-carbs").innerText = `${user.dailyCarbs}g / ${goal}g`;
+
+  let carbProgress = document.getElementById("carbBar");
+  console.log(user.dailyCarbs/goal);
+  if (user.dailyCarbs/goal < 1) { 
+    carbProgress.style.width = ((user.dailyCarbs/goal)*100).toFixed(1) + '%';
+    if (user.dailyCarbs/goal >= .1) {
+      carbProgress.innerHTML = ((user.dailyCarbs/goal)*100).toFixed(1) + '%';
+    }
+    if (user.dailyCarbs/goal >= .7) {
+      carbProgress.style.backgroundColor = 'yellow';
+      carbProgress.style.color = 'black';
+    }
+  } else {
+    carbProgress.style.width = 100 + '%';
+    carbProgress.innerHTML = 'You have reached your carb limit';
+    carbProgress.style.backgroundColor = 'red';
+    carbProgress.style.color = 'white';
+  }
   let ulElement = document.createElement("ul");
-
-  
-  // let month = currentTime.getMonth() + 1;
-  // let day = currentTime.getDate();
-  // let year = currentTime.getFullYear();
-
   for (let i = 0; i < user.food.length; i++) {
-    // let ulElement = document.createElement('ul')
-    // document.getElementById('carb-data-display').append(ulElement);
-    let currentTime = new Date(user.foodTimes[i]);
+    let currentDate = new Date(user.foodTimes[i]);
+    let currentHours = currentDate.getHours(); 
+    let currentMinutes = String(currentDate.getMinutes()).padStart(2, "0");
+    let month = currentDate.getMonth() + 1;
+    let day = currentDate.getDate();
+    let year = currentDate.getFullYear().toString().split('');
+    let printLog = `${user.food[i]} ${'\xa0'.repeat(3)} ${user.foodCarbs[i]}g ${'\xa0'.repeat(3)} ${currentHours}:${currentMinutes} ${'\xa0'.repeat(3)} ${month}/${day}/${year[2]}${year[3]}`;
     let liElement = document.createElement('li')
-    liElement.append(user.food[i] + " " + user.foodCarbs[i] + "g" + " " + currentTime);
-    // month + "/" + day + "/" + year);
+    liElement.append(printLog);
     ulElement.append(liElement);
-    
   }
   document.getElementById("carb-data-display").replaceChildren(ulElement);
 }

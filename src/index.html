@@ -31,6 +31,7 @@
     </div>
     </form><br>
 
+
   <div id="carb-stuff">
     <input type="number" id="carb-goal" placeholder="Daily Carb Goal (g)">
     <button type="button" id="carb-goal-button">Enter Carb Goal</button><br>
@@ -61,6 +62,9 @@
       <p id="carbs"></p>
       <p>These are your total carbs for the day: <span id="daily-carbs"></span></p>
       <p id='carb-warning'></p>
+      <div id="carbProgress">
+        <div id="carbBar"></div>
+      </div>
     </div>
   </div>
   
@@ -106,8 +110,8 @@
   <div id="temp-activity-div">
 
   </div>
-
-  <div id="carb-data-display">
+  <br>
+  <div id="carb-data-display" class="textbox" contenteditable="true">
     <ul id="food-list">
       
     </ul>

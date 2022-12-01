@@ -19,7 +19,7 @@ export function addCarbs (gramsWeight, carbs, user) {
   const totalCarbs = gramsWeight * carbs;
   //let user = JSON.parse(sessionStorage.getItem('person'));
   let carbCount =  parseFloat(user.dailyCarbs) + parseFloat(totalCarbs); 
-  user.dailyCarbs = parseInt(carbCount.toFixed(2));
+  user.dailyCarbs = parseFloat(carbCount.toFixed(2));
   //sessionStorage.setItem('person', JSON.stringify(user));
   return totalCarbs;
 }
@@ -31,5 +31,4 @@ export function addMealCarbs (mealCarbs, user) {
   //sessionStorage.setItem('person', JSON.stringify(user));
 }
 
-// let carbCount = parseFloat(sessionStorage.getItem('totalCarbs')) + totalCarbs; 
 

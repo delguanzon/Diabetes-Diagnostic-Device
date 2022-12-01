@@ -5,3 +5,26 @@ body {
 .hidden-carb-form{
   display: none;
 }
+ 
+ div.textbox {
+   background-color: #ececec;
+   height: 100px;
+   max-height: 100px;
+   width: 350px;  
+   overflow-x: hidden;
+   overflow-y: scroll;
+ }
+
+ #carbProgress {
+  width: 50%;
+  background-color: rgb(182, 180, 180);
+}
+
+#carbBar {
+  width: 0%;
+  height: 25px;
+  background-color: green;
+  text-align: center;
+  line-height: 25px; /* To center it vertically */
+  color: white;
+}
