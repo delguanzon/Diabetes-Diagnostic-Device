@@ -9,6 +9,11 @@ export default class User {
     this.glucoseTimes = [];
     this.insulinLevels = [];
     this.insulinTimes = [];
+    this.dailyCarbs = 0;
+    this.carbsGoal = 0;
+    this.food = [];
+    this.foodCarbs = [];
+    this.foodTimes = [];
   }
 
   setBloodSugar(bs) {

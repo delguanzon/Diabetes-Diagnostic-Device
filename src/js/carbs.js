@@ -15,17 +15,20 @@ export function conversion (quantity, measurement) {
   }
 } 
 
-export function addCarbs (user, gramsWeight, carbs) {
+export function addCarbs (gramsWeight, carbs, user) {
   const totalCarbs = gramsWeight * carbs;
-  let carbCount = parseFloat(sessionStorage.getItem('totalCarbs')) + totalCarbs; 
-  sessionStorage.setItem('totalCarbs', carbCount);
-  console.log(carbCount);
+  //let user = JSON.parse(sessionStorage.getItem('person'));
+  let carbCount =  parseFloat(user.dailyCarbs) + parseFloat(totalCarbs); 
+  user.dailyCarbs = parseFloat(carbCount.toFixed(2));
+  //sessionStorage.setItem('person', JSON.stringify(user));
   return totalCarbs;
 }
 
+export function addMealCarbs (mealCarbs, user) {
+  //let user = JSON.parse(sessionStorage.getItem('person'));
+  let carbCount =  parseFloat(user.dailyCarbs) + parseInt(mealCarbs); 
+  user.dailyCarbs = parseInt(carbCount.toFixed(2));
+  //sessionStorage.setItem('person', JSON.stringify(user));
+}
 
-/// 8 T = 100 g        (input/8) * 100 = grams
-// 24 t = 100 g       (input/24) * 100 = grams
-// 4 ounces = 100 g   (input/4) * 100 = grams
-// .25 lbs = 100 g    (input/.25) * 100 = grams
-// .5 c = 100 g       (input/.5) * 100 = grams
+

@@ -4,29 +4,79 @@ import './assets/css/styles.css';
 
 import { Activity } from './js/activity.js';
 import CarbService from './js/carb-services.js';
-import { conversion, addCarbs } from './js/carbs.js';
+import { conversion, addCarbs, addMealCarbs } from './js/carbs.js';
 import User from './js/user.js';
 import {updateGlucoseGoal, addGlucoseLevel, addInsulinLevel, calculateA1C, bloodGlucoseChecker} from './js/blood-glucose.js';
 
 
-async function getCarbs(food, user) {
+async function getCarbs(food) {
   const promise = await CarbService.getCarbs(food);
   if (promise[0].text) {
     sessionStorage.setItem(food, JSON.stringify(promise));
-    printElements(promise, user);
+    carbsCalc(promise, food);
   } else {
     printError();
   }
 }
 
-function printElements(data, user) {
+function carbsCalc(data, food) {
   const carbs = data[0].parsed[0].food.nutrients.CHOCDF;
+  let user = JSON.parse(sessionStorage.getItem('person'));
   let quantity = document.getElementById("quantity-of-food").value;
   let measurement = document.getElementById("measurement").value;
   const gramsWeight = conversion(quantity, measurement);
-  let totalCarbs = addCarbs(user, gramsWeight, carbs);
-  document.getElementById('carbs').innerText = `There are ${totalCarbs}g carbs in ${quantity} ${measurement} of ${data[0].text}`;
-  document.getElementById("daily-carbs").innerText = sessionStorage.getItem('totalCarbs');
+  let ingredientCarbs = addCarbs(gramsWeight, carbs, user).toFixed(2);
+  console.log(ingredientCarbs);
+  document.getElementById('carbs').innerText = `There are ${ingredientCarbs}g carbs in ${quantity} ${measurement} of ${data[0].text}`;
+  user.food.push(food);
+  user.foodCarbs.push(parseFloat(ingredientCarbs));
+  user.foodTimes.push(Date.now());
+  sessionStorage.setItem('person', JSON.stringify(user));
+  printElements(user);
+}
+
+function printElements(user) {
+  let goal = user.carbsGoal;
+  // if (parseFloat(user.dailyCarbs) >= goal) {
+  //   document.getElementById('carb-warning').innerText = 'You have reached your carb limit'
+  // } else if (parseFloat(user.dailyCarbs) >= goal * .75) {
+  //   document.getElementById('carb-warning').innerText = 'You have reached 75% of your carb limit'
+  // } else if (parseFloat(user.dailyCarbs) >= goal * .5) {
+  //   document.getElementById('carb-warning').innerText = 'You have reached 50% of your carb limit'
+  // }
+  document.getElementById("daily-carbs").innerText = `${user.dailyCarbs}g / ${goal}g`;
+
+  let carbProgress = document.getElementById("carbBar");
+  console.log(user.dailyCarbs/goal);
+  if (user.dailyCarbs/goal < 1) { 
+    carbProgress.style.width = ((user.dailyCarbs/goal)*100).toFixed(1) + '%';
+    if (user.dailyCarbs/goal >= .1) {
+      carbProgress.innerHTML = ((user.dailyCarbs/goal)*100).toFixed(1) + '%';
+    }
+    if (user.dailyCarbs/goal >= .7) {
+      carbProgress.style.backgroundColor = 'yellow';
+      carbProgress.style.color = 'black';
+    }
+  } else {
+    carbProgress.style.width = 100 + '%';
+    carbProgress.innerHTML = 'You have reached your carb limit';
+    carbProgress.style.backgroundColor = 'red';
+    carbProgress.style.color = 'white';
+  }
+  let ulElement = document.createElement("ul");
+  for (let i = 0; i < user.food.length; i++) {
+    let currentDate = new Date(user.foodTimes[i]);
+    let currentHours = currentDate.getHours(); 
+    let currentMinutes = String(currentDate.getMinutes()).padStart(2, "0");
+    let month = currentDate.getMonth() + 1;
+    let day = currentDate.getDate();
+    let year = currentDate.getFullYear().toString().split('');
+    let printLog = `${user.food[i]} ${'\xa0'.repeat(3)} ${user.foodCarbs[i]}g ${'\xa0'.repeat(3)} ${currentHours}:${currentMinutes} ${'\xa0'.repeat(3)} ${month}/${day}/${year[2]}${year[3]}`;
+    let liElement = document.createElement('li')
+    liElement.append(printLog);
+    ulElement.append(liElement);
+  }
+  document.getElementById("carb-data-display").replaceChildren(ulElement);
 }
 
 function printError() {
@@ -35,12 +85,33 @@ function printError() {
 
 function handleCarbSubmission() {
   event.preventDefault();
-  let user = new User("Henry", "25", "8/30/1997");
   const food = document.getElementById("type-of-food").value;
-  getCarbs(food, user);
+  getCarbs(food);
   document.getElementById("type-of-food").innerText = null;
 }
 
+
+function handleMealSubmission() {
+  event.preventDefault();
+  let user = JSON.parse(sessionStorage.getItem('person'));
+  const mealName = document.getElementById("meal-name").value;
+  const mealCarbs = document.getElementById("meal-carbs").value;
+  user.food.push(mealName);
+  user.foodCarbs.push(parseFloat(mealCarbs));
+  user.foodTimes.push(Date.now());
+  addMealCarbs(mealCarbs, user);
+  sessionStorage.setItem('person', JSON.stringify(user));
+  printElements(user);
+}
+
+function handleCarbGoalSubmission() {
+  let user = JSON.parse(sessionStorage.getItem('person'));
+  let goal = document.getElementById('carb-goal').value;
+  user.carbsGoal = goal;
+  sessionStorage.setItem('person', JSON.stringify(user));
+  document.getElementById('carb-inputs').removeAttribute("class");
+ }
+  
 function handleGlucoseGoalSubmission() {
   event.preventDefault();
   // Retrieve inputs
@@ -164,7 +235,7 @@ function printInsulinData() {
   } else {
     document.querySelector('div#insDiv').replaceChildren('');
   }
-  
+
   // Convert user.glucoseTimes array to array of printable timeStamps
   let insTimeArray = user.insulinTimes;
   for (let i = 0; i < user.insulinTimes.length; i++) {
@@ -328,6 +399,7 @@ function displayTimer() {
 function handleEndTimer() {
   clearInterval(parseInt(sessionStorage.intId));
   document.getElementById("end-activity-form").removeAttribute("hidden");
+
   let activity = JSON.parse(sessionStorage.activity);
   activity.timeEnd = Date.now();
   sessionStorage.setItem("activity", JSON.stringify(activity));
@@ -349,6 +421,7 @@ function handleEndActivityForm(e) {
   activity.steps = document.getElementById("steps").value;
   activity.currentBs = document.getElementById("afterBs").value;
 
+  activity.timeEnd = Date.now();
   console.log(activity);
 
   let person = JSON.parse(sessionStorage.person);
@@ -356,6 +429,7 @@ function handleEndActivityForm(e) {
   person.glucoseLevels.push(activity.currentBs);
   person.glucoseTimes.push(Date.now());
   sessionStorage.setItem("person", JSON.stringify(person));
+
   displayRecentActivity();
 
   document.getElementById("new-activity-btn").removeAttribute("hidden");
@@ -514,10 +588,10 @@ window.addEventListener('load', function () {
   document.querySelector('form#glucose-goal-form').addEventListener('submit', handleGlucoseGoalSubmission);
   document.querySelector('form#glucose-level-form').addEventListener('submit', handleGlucoseSubmission);
   document.querySelector('form#insulin-level-form').addEventListener('submit', handleInsulinSubmission);  
-  sessionStorage.setItem('totalCarbs', 0);
-  document.getElementById("food-carbs").addEventListener("submit", handleCarbSubmission);
   document.getElementById("landingSubmit").addEventListener("click", handleLandingForm);
-  
-  // temp
+  document.getElementById("food-carbs").addEventListener("submit", handleCarbSubmission);
+  document.getElementById("meal-carbs-button").addEventListener("click", handleMealSubmission);
+  document.getElementById("carb-goal-button").addEventListener("click", handleCarbGoalSubmission);  
   document.getElementById("report-btn").addEventListener("click", logActivity);
+
 });
