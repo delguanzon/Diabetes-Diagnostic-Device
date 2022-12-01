@@ -9,7 +9,49 @@
 </head>
 
 <body>
-  <div class="container">
+  <div class="container-fluid " id="landing-div">
+    <div class="row" style="height: 100%; background-color: white;">
+      <div class="jumbotron col">
+        <h1 class="display-4">Diabetes Diagnostic Device</h1>
+        <p class="lead">This is a brief info about the app. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+          do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          .</p>
+        <hr class="my-4">
+        <p>Submit your personal info and the blood glucose maintenance levels in the form to start using the app.</p>
+      </div>
+      <div class="col">
+        <form>
+          <label for="fnField">Full Name</label>
+          <input id="fnField" class="form-control" type="text">
+          <div class="form-row form-group">
+            <div class="form-group col-md-6">
+              <label for="dobField">Birthdate</label>
+              <input id="dobField" class="form-control" type="date">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="ageField">Age</label>
+              <input id="ageField" class="form-control" type="number">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="lowField">Low</label>
+              <input id="lowField" class="form-control" type="text">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="highField">High</label>
+              <input id="highField" class="form-control" type="text">
+            </div>
+          </div>
+          <div class="d-flex justify-content-center">
+            <button id="landingSubmit" class="btn btn-primary">start</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="container" id="main-div" hidden>
     <h1>Daily Diabetes Diagnostic Device</h1>
     <form id="glucose-form">
       <div class="mb-3">
@@ -94,7 +136,7 @@
           <h4 id="dispTimer">00:00</h4>
           <button id="start">Start</button> <button id="pause">Pause</button><button id="end">End</button>
         </div>
-        <form id="end-activity-form"  hidden>
+        <form id="end-activity-form" hidden>
           <label for="afterBs">Current Blood Sugar</label>
           <input type="number" id="afterBs">
           <label for="steps">Steps</label>
@@ -103,8 +145,36 @@
         </form>
       </div>
     </div>
-    <div id="report-temp" class="bg-primary text-white">
+    <div id="report-temp" class="bg-dark text-white">
+      <h2>Progress Reports:</h2>
       <div id="activity-log">
+      </div>
+      <h5>Monday</h5>
+      <div id="monday-report">
+      </div>
+      <br>
+      <h5>Tuesday</h5>
+      <div id="tuesday-report">
+      </div>
+      <br>
+      <h5>Wednesday</h5>
+      <div id="wednesday-report">
+      </div>
+      <br>
+      <h5>Thursday</h5>
+      <div id="thursday-report">
+      </div>
+      <br>
+      <h5>Friday</h5>
+      <div id="friday-report">
+      </div>
+      <br>
+      <h5>Saturday</h5>
+      <div id="saturday-report">
+      </div>
+      <br>
+      <h5>Sunday</h5>
+      <div id="sunday-report">
       </div>
     </div>
   </div>

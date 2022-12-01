@@ -388,11 +388,39 @@ function logActivity() {
   let displayUl = document.createElement("ul");
   displayUl.setAttribute("id", "display-day-ul");
 
+  // check day and assign dayID
+  let day = new Date(Date.now());
+  let dayID;
+  switch(day.getDay())
+  {
+  case(0):
+    dayID = "sunday-report";
+    break;
+  case(1):
+    dayID = "monday-report";
+    break;
+  case(2):
+    dayID = "tuesday-report";
+    break;
+  case(3):
+    dayID = "wednesday-report";
+    break;
+  case(4):
+    dayID = "thursday-report";
+    break;
+  case(5):
+    dayID = "friday-report";
+    break;
+  case(6):
+    dayID = "saturday-report";
+    break;
+  }
+  
   for (const activity of person.activities) {
     let date = new Date(activity.timeStart);
     
     // Display time header for each log
-    displayUl.append(`${date.getMonth() + 1}-${date.getDate()}-${date.getFullYear()} @ ${date.toTimeString()}`);
+    displayUl.append(`@ ${date.toTimeString()}`);
     for (const [key, value] of Object.entries(activity)) {
       let li = document.createElement("li");
 
@@ -418,16 +446,60 @@ function logActivity() {
       li.append(`${key}: ${value}`);
       displayUl.append(li);
     }
-    document.getElementById("activity-log").replaceChildren(displayUl);
+
+    //append UL to dayID i.e. Monday
+    document.getElementById(`${dayID}`).replaceChildren(displayUl);
   }
+
+  //get goals and report total met
+  let goalsMet = 0;
+
+  //update as we add goals
+  const goalsSet = 1;
+
+  //append progress report details
+  let progressTitle = document.createElement("h5");
+  progressTitle.append(`progress report:`);
+  displayUl.append(progressTitle);
+
+  //get total steps from progress bar
+  let stepsP = document.createElement("p");
+  stepsP.append(`Steps Goal: ${(document.getElementById("steps-progress").innerText).split(' ')[0]} out of 3000 steps`);
+  displayUl.append(stepsP);
+  if (parseInt((document.getElementById("steps-progress").innerText).split(' ')[0]) >= 3000) {
+    goalsMet += 1;
+  }
+
+  //get time goal
+  let timeP = document.createElement("p");
+  timeP.append(`Workout Time Goal: ${document.getElementById("workout-progress").innerText} of the way to 20 minutes`);
+  displayUl.append(timeP);
+
+  // goal set and met meter
+  let goalsP = document.createElement("p");
+  goalsP.append(`${person.name}, you met ${goalsMet} out of ${goalsSet}`);
+  displayUl.append(goalsP);
+}
+
+function handleLandingForm(e) {
+  e.preventDefault();
+  let name = document.getElementById("fnField").value;
+  let age = document.getElementById("ageField").value;
+  let dob = document.getElementById("dobField").value;
+  let low = document.getElementById("lowField").value;
+  let high = document.getElementById("highField").value;
+
+  const person = new User(name, age, dob, low, high);
+  sessionStorage.intId = null;
+  //To access person, do JSON.parse(sessionStorage.getItem(person))
+  sessionStorage.setItem("person", JSON.stringify(person));
+
+  document.getElementById("main-div").removeAttribute("hidden");
+  document.getElementById("landing-div").setAttribute("hidden","");
 }
 
 window.addEventListener('load', function () {
 
-  const person = new User("name", "age", "dob");
-  sessionStorage.intId = null;
-  //To access person, do JSON.parse(sessionStorage.getItem(person))
-  sessionStorage.setItem("person", JSON.stringify(person));
   document.getElementById("new-activity-btn").addEventListener("click", handleNewActivity);
   document.getElementById("activity-form").addEventListener("submit", handleActivityFormSubmission);
   document.getElementById("start").addEventListener("click", handleStartTimer);
@@ -437,6 +509,8 @@ window.addEventListener('load', function () {
   document.querySelector('form#glucose-form').addEventListener('submit', handleGlucoseSubmission);
   sessionStorage.setItem('totalCarbs', 0);
   document.getElementById("food-carbs").addEventListener("submit", handleCarbSubmission);
+  document.getElementById("landingSubmit").addEventListener("click", handleLandingForm);
+  
   // temp
   document.getElementById("report-btn").addEventListener("click", logActivity);
 });
