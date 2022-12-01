@@ -6,7 +6,8 @@ import { Activity } from './js/activity.js';
 import CarbService from './js/carb-services.js';
 import { conversion, addCarbs } from './js/carbs.js';
 import User from './js/user.js';
-import { updateGlucoseGoal, addGlucoseLevel, addInsulinLevel, calculateA1C } from './js/blood-glucose.js';
+import {updateGlucoseGoal, addGlucoseLevel, addInsulinLevel, calculateA1C, bloodGlucoseChecker} from './js/blood-glucose.js';
+
 
 async function getCarbs(food, user) {
   const promise = await CarbService.getCarbs(food);
@@ -40,27 +41,44 @@ function handleCarbSubmission() {
   document.getElementById("type-of-food").innerText = null;
 }
 
+function handleGlucoseGoalSubmission() {
+  event.preventDefault();
+  // Retrieve inputs
+  const glucRangeLow = document.getElementById('glucose-range-low').value;
+  const glucRangeHigh = document.getElementById('glucose-range-high').value;
+  // Run function to add data to user object
+  updateGlucoseGoal(glucRangeLow, glucRangeHigh);
+  // TODO: Add display function
+  // Reset form
+  resetInputElement(document.getElementById('glucose-range-low'));
+  resetInputElement(document.getElementById('glucose-range-high'));
+}
+
 function handleGlucoseSubmission() {
   event.preventDefault();
   // Retrieve inputs
-  const glucGoal = document.getElementById('glucose-goal').value;
   const glucLvl = document.getElementById('glucose-level').value;
-  const glucLvlTime = document.getElementById('glucose-time').value;
-  const insLvl = document.getElementById('insulin-level').value;
-  const insLvlTime = document.getElementById('insulin-time').value;
-  console.log(glucGoal);
-  console.log(glucLvl);
-  console.log(glucLvlTime);
-  console.log(insLvl);
-  console.log(insLvlTime);
+  const glucLvlTime = new Date();
   // Run functions to add data to user object
-  updateGlucoseGoal(glucGoal);
   addGlucoseLevel(glucLvl, glucLvlTime);
-  addInsulinLevel(insLvl, insLvlTime);
   calculateA1C();
+  bloodGlucoseChecker();
+  // Print results
   printGlucoseData();
-  testPrintGlucTables()
+  // Reset form
+  resetInputElement(document.getElementById('glucose-level'));
+}
+
+function handleInsulinSubmission() {
+  event.preventDefault();
+  // Retrieve inputs
+  const insLvl = document.getElementById('insulin-level').value;
+  const insLvlTime = new Date();
+  // Run functions to add data to user object
+  addInsulinLevel(insLvl, insLvlTime);
   printInsulinData();
+  // Reset form
+  resetInputElement(document.getElementById('insulin-level'));
 }
 
 function dataToTable(array1Name, array1, array2Name, array2) {
@@ -92,20 +110,6 @@ function dataToTable(array1Name, array1, array2Name, array2) {
   return table;
 }
 
-function testPrintGlucTables() {
-  let user = JSON.parse(sessionStorage.getItem('person'));
-  // Make new div for data if not already made
-  if (!document.querySelector('div#glucDiv')) {
-    let glucDiv = document.createElement('div');
-    glucDiv.setAttribute('id', 'glucDiv');
-    document.querySelector('div.container').append(glucDiv);
-  } else {
-    document.querySelector('div#glucDiv').replaceChildren("");
-  }
-  const table = dataToTable('Glucose Levels', user.glucoseLevels, 'Glucose Time', user.glucoseTimes);
-  document.querySelector('div#glucDiv').append(table);
-}
-
 function printGlucoseData() {
   let user = JSON.parse(sessionStorage.getItem('person'));
   // Make new div for data if not already made
@@ -116,33 +120,39 @@ function printGlucoseData() {
   } else {
     document.querySelector('div#glucDiv').replaceChildren("");
   }
-  // Add data to table
-  let table = document.createElement('table');
-  table.setAttribute('class', 'table');
-  // Build table header
-  let head = document.createElement('thead');
-  let headerRow = document.createElement('tr');
-  let tableHeader1 = document.createElement('th');
-  let tableHeader2 = document.createElement('th');
-  tableHeader1.innerText = 'Gluocose Levels';
-  tableHeader2.innerText = 'Time';
-  headerRow.append(tableHeader1, tableHeader2);
-  head.append(headerRow);
-  table.append(head);
-  // Build table body
-  let body = document.createElement('tbody');
-  for (let i = 0; i < user.glucoseLevels.length; i++) {
-    let tr = document.createElement('tr');
-    let td1 = document.createElement('td');
-    let td2 = document.createElement('td');
-    td1.innerText = user.glucoseLevels[i];
-    td2.innerText = user.glucoseTimes[i];
-    // li.append(`Glucose level is ${user.glucoseLevels[i]}, and time of the entry is ${user.glucoseTimes[i]}`);
-    tr.append(td1, td2);
-    body.append(tr);
+  // Convert user.glucoseTimes array to array of printable timeStamps
+  let glucTimeArray = user.glucoseTimes;
+  let glucLevelsArray = user.glucoseLevels;
+  for (let i = 0; i < user.glucoseTimes.length; i++) {
+    glucTimeArray[i] = toTimeStamp(user.glucoseTimes[i]);
+    glucLevelsArray[i] = glucLevelsArray[i] + ' mg/dL';
   }
-  table.append(body);
-  // document.querySelector('div#glucDiv').append(table);
+  const table = dataToTable('Glucose Levels', glucLevelsArray, 'Time Logged', glucTimeArray);
+  // Display alert based on logic (if red, else if yellow, else green)
+  if (user.glucStatus){
+    let alertContainer = document.createElement('div');
+    alertContainer.setAttribute('role', 'alert');
+    if (user.glucStatus === 'redAlert') {
+      alertContainer.setAttribute('class', 'alert alert-danger');
+      alertContainer.append('Alert! Current blood glucose level outside target range.');
+    } else if (user.glucStatus === 'yellowWarning') {
+      alertContainer.setAttribute('class', 'alert alert-warning');
+      alertContainer.append('Warning! Current blood glucose level close to target limits.');
+    } else if (user.glucStatus === 'greenSuccess') {
+      alertContainer.setAttribute('class', 'alert alert-success');
+      alertContainer.append('Success! Current blood glucose level within target range.');
+    } 
+    document.querySelector('div#glucDiv').prepend(alertContainer);
+  }
+  // Display Glucose Summary Header & A1C 
+  let summaryTitle = `Glucose Levels`;
+  let h3 = document.createElement("h3");
+  h3.append(summaryTitle);
+  let a1C = `A1C ${user.a1C}`;
+  let h5 = document.createElement("h5");
+  h5.append(a1C);
+  document.querySelector('div#glucDiv').append(h3, h5);
+  document.querySelector('div#glucDiv').append(table);
 }
 
 function printInsulinData() {
@@ -154,33 +164,28 @@ function printInsulinData() {
   } else {
     document.querySelector('div#insDiv').replaceChildren('');
   }
-  // Table functionality
-  let table = document.createElement('table');
-  table.setAttribute('class', 'table');
-  let head = document.createElement('thead');
-  let headerRow = document.createElement('tr');
-  let tableHeader1 = document.createElement('th');
-  let tableHeader2 = document.createElement('th');
-  tableHeader1.innerText = 'Insulin Levels';
-  tableHeader2.innerText = 'Time';
-  headerRow.append(tableHeader1, tableHeader2);
-  head.append(headerRow);
-  table.append(head);
-  let body = document.createElement('tbody');
-  for (let i = 0; i < user.insulinLevels.length; i++) {
-    let tr = document.createElement('tr');
-    let td1 = document.createElement('td');
-    let td2 = document.createElement('td');
-    td1.innerText = user.insulinLevels[i];
-    td2.innerText = user.insulinTimes[i];
-    tr.append(td1, td2);
-    body.append(tr);
+  
+  // Convert user.glucoseTimes array to array of printable timeStamps
+  let insTimeArray = user.insulinTimes;
+  for (let i = 0; i < user.insulinTimes.length; i++) {
+    insTimeArray[i] = toTimeStamp(user.insulinTimes[i]);
   }
-  table.append(body);
+  const table = dataToTable('Insulin Level', user.insulinLevels, 'Time Logged', insTimeArray);
   document.querySelector('div#insDiv').append(table);
 }
 
 //Utility Function
+function toTimeStamp(dateValue) { 
+  // Convert date to hours:minutes
+  let date = new Date(dateValue);
+  let timeStamp = `${date.getHours()}:${date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()}`;
+  return timeStamp;
+}
+
+function resetInputElement(docElement) {
+  docElement.value = null;
+}
+
 function checkBloodSugar(bloodSugar) {
   if (parseInt(bloodSugar) <= 100) {
     return "low";
@@ -502,11 +507,13 @@ window.addEventListener('load', function () {
 
   document.getElementById("new-activity-btn").addEventListener("click", handleNewActivity);
   document.getElementById("activity-form").addEventListener("submit", handleActivityFormSubmission);
+  document.getElementById("end-activity-form").addEventListener("submit", handleEndActivityForm); 
   document.getElementById("start").addEventListener("click", handleStartTimer);
   document.getElementById("end").addEventListener("click", handleEndTimer);
   document.getElementById("pause").addEventListener("click", handlePauseTimer);
-  document.getElementById("end-activity-form").addEventListener("submit", handleEndActivityForm);
-  document.querySelector('form#glucose-form').addEventListener('submit', handleGlucoseSubmission);
+  document.querySelector('form#glucose-goal-form').addEventListener('submit', handleGlucoseGoalSubmission);
+  document.querySelector('form#glucose-level-form').addEventListener('submit', handleGlucoseSubmission);
+  document.querySelector('form#insulin-level-form').addEventListener('submit', handleInsulinSubmission);  
   sessionStorage.setItem('totalCarbs', 0);
   document.getElementById("food-carbs").addEventListener("submit", handleCarbSubmission);
   document.getElementById("landingSubmit").addEventListener("click", handleLandingForm);
