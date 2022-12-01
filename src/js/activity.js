@@ -20,7 +20,9 @@ export class Activity {
   }
 
   getElapseTime() {
-    return (this.timeEnd - this.timeStart) / 1000;
+    let start = new Date(this.timeStart);
+    let end = new Date(this.timeEnd);
+    return (end.getTime() - start.getTime()) / 1000;
   }
 
   getActivityDate() {
